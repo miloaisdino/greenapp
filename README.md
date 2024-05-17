@@ -1,52 +1,36 @@
-# EcoRewards
-By Keith Ong (keith_ong@u.nus.edu) and Maximus Tan (maximus@u.nus.edu)
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Motivation 
+## Getting Started
 
-There is an increasing amount of concern over environmental damage that humans are causing over the years. We want to do our part in saving the environment by incentivising users to be more environmentally-friendly through the use of our app. Offering rewards for recycling is a powerful motivator, and we hope to increase participation rates through this incentive.
+First, run the development server:
 
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## Aim 
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-With growing worries about how humans harm the environment, we want to help by encouraging people to be greener with our app. We're offering rewards for recycling to get more people involved. Our aim is to make a big change in how we all treat the planet, so it stays healthy for years to come. With our app, we hope to encourage users to be greener and create a positive feedback loop where users feel rewarded for their eco-friendly actions.
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## User Stories
+## Learn More
 
-As an environmentally conscious user who wants to do their part in saving the environment, I want to be able to log my recycling records through the application.
-As a rewards centered user who wants to earn rewards, I want to be able to claim rewards through the application using my points.
-As a business owner committed to corporate social responsibility, I want to partner with the app to offer exclusive rewards or promotions to users, enhancing my brand’s image.
+To learn more about Next.js, take a look at the following resources:
 
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
+## Deploy on Vercel
 
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## Features
-
-- Feature 1 (core): Scan the QR code at participating recycling bins to log a disposal (geolocation)
-- Feature 2 (core): Points leaderboard
-- Feature 3 (core): CRUD features for account, points and redemption
-- Feature 4 (extension): Port over to an mobile application (probably android)
-- Feature 5 (extension): Merchant dashboard & analytics and adding points to NUS Smart Dining
-- Feature 6 (extension): Using AI api (Clarifai) to identify trash, can explore doing the pipeline ourselves if there are extra time
-- Feature 7 (extension): Using our mobile app to scan QR code
-- Feature 8 (extension): Verify user is near to the bin and find nearby bins 
-
-
-## Tech Stack
-
-### Web
-- React
-- TailwindCSS
-- Toast
-- Eslint & Prettier
-- Express.js
-- Postgresql (supabase)
-- Redis
-- RabbitMQ
-
-### Mobile app
-- React Native
-- TailwindCSS
-- Reusing backend and database from Web
-
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
