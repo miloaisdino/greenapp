@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import apiLinks from "@/app/pages/api";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -19,7 +20,7 @@ export default function Login() {
     };
 
     // Make a POST request to localhost:8000/user with the form data
-    fetch("http://localhost:8000/user", {
+    fetch(`http://${apiLinks.main}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

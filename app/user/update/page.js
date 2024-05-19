@@ -25,6 +25,7 @@ export default function Update() {
   );
   const [points_balance, setPointsBalance] = useState(data.points_balance);
   const [date_joined, setDateJoined] = useState(data.date_joined);
+
   useEffect(() => {
     // Fetch the current user's data from the server
     const fetchUserData = async () => {
