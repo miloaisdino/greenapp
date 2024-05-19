@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -32,6 +33,7 @@ export default function Login() {
       .catch((error) => {
         // Handle any errors
         console.error(error);
+        toast.error("An error occurred. Please try again.");
       });
   };
 
