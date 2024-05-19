@@ -31,6 +31,11 @@ export default function Update() {
     async function fetchUserData() {
       try {
         const currentUser = await fetchCurrentUser();
+        setUsername(currentUser.username);
+        setPassword(currentUser.password);
+        setEmail(currentUser.email);
+        setFullName(currentUser.full_name);
+        setProfilePictureUrl(currentUser.profile_picture_url);
         setPointsBalance(currentUser.points_balance);
         setDateJoined(currentUser.date_joined);
       } catch (error) {
