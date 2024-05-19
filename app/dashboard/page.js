@@ -13,6 +13,8 @@ import {
 import { BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { fetchCurrentUser } from "../component/fetchUser";
+import apiLinks from "../pages/api";
+import { MenuButton, MenuItems } from "@headlessui/react";
 
 const navigation = [
   { name: "Home", href: "#" },
@@ -20,35 +22,22 @@ const navigation = [
   { name: "Clients", href: "#" },
   { name: "Expenses", href: "#" },
 ];
-const secondaryNavigation = [
-  { name: "Last 7 days", href: "#", current: true },
-  { name: "Last 30 days", href: "#", current: false },
-  { name: "All-time", href: "#", current: false },
-];
 const stats = [
   {
-    name: "Revenue",
+    name: "Lifetime Points",
     value: "$405,091.00",
-    change: "+4.75%",
-    changeType: "positive",
   },
   {
-    name: "Overdue invoices",
+    name: "Current Points",
     value: "$12,787.00",
-    change: "+54.02%",
-    changeType: "negative",
   },
   {
-    name: "Outstanding invoices",
-    value: "$245,988.00",
-    change: "-1.39%",
-    changeType: "positive",
+    name: "Highest Ranking",
+    value: "#2",
   },
   {
-    name: "Expenses",
-    value: "$30,156.00",
-    change: "+10.18%",
-    changeType: "negative",
+    name: "Current Ranking",
+    value: "#4",
   },
 ];
 const statuses = {
@@ -62,36 +51,28 @@ const days = [
     dateTime: "2023-03-22",
     transactions: [
       {
-        id: 1,
-        invoiceNumber: "00012",
-        href: "#",
-        amount: "$7,600.00 USD",
-        tax: "$500.00",
+        submission_id: 1,
+        href: "#", //add in link to submission
+        points_awarded: "$7,600.00 USD",
         status: "Paid",
-        client: "Reform",
         description: "Website redesign",
         icon: ArrowUpCircleIcon,
       },
       {
-        id: 2,
-        invoiceNumber: "00011",
-        href: "#",
-        amount: "$10,000.00 USD",
-        status: "Withdraw",
-        client: "Tom Cook",
-        description: "Salary",
-        icon: ArrowDownCircleIcon,
+        submission_id: 2,
+        href: "#", //add in link to submission
+        points_awarded: "$7,600.00 USD",
+        status: "Paid",
+        description: "Website redesign",
+        icon: ArrowUpCircleIcon,
       },
       {
-        id: 3,
-        invoiceNumber: "00009",
-        href: "#",
-        amount: "$2,000.00 USD",
-        tax: "$130.00",
-        status: "Overdue",
-        client: "Tuple",
-        description: "Logo design",
-        icon: ArrowPathIcon,
+        submission_id: 3,
+        href: "#", //add in link to submission
+        points_awarded: "$7,600.00 USD",
+        status: "Paid",
+        description: "Website redesign",
+        icon: ArrowUpCircleIcon,
       },
     ],
   },
@@ -113,41 +94,6 @@ const days = [
     ],
   },
 ];
-const clients = [
-  {
-    id: 1,
-    name: "Tuple",
-    imageUrl: "https://tailwindui.com/img/logos/48x48/tuple.svg",
-    lastInvoice: {
-      date: "December 13, 2022",
-      dateTime: "2022-12-13",
-      amount: "$2,000.00",
-      status: "Overdue",
-    },
-  },
-  {
-    id: 2,
-    name: "SavvyCal",
-    imageUrl: "https://tailwindui.com/img/logos/48x48/savvycal.svg",
-    lastInvoice: {
-      date: "January 22, 2023",
-      dateTime: "2023-01-22",
-      amount: "$14,000.00",
-      status: "Paid",
-    },
-  },
-  {
-    id: 3,
-    name: "Reform",
-    imageUrl: "https://tailwindui.com/img/logos/48x48/reform.svg",
-    lastInvoice: {
-      date: "January 23, 2023",
-      dateTime: "2023-01-23",
-      amount: "$7,600.00",
-      status: "Paid",
-    },
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -156,15 +102,73 @@ function classNames(...classes) {
 export default function Dashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [clients, setClients] = useState([
+    {
+      id: 1,
+      name: "Tuple",
+      imageUrl: "https://tailwindui.com/img/logos/48x48/tuple.svg",
+      lastInvoice: {
+        date: "December 13, 2022",
+        dateTime: "2022-12-13",
+        amount: "$2,000.00",
+        status: "Overdue",
+      },
+    },
+    {
+      id: 2,
+      name: "SavvyCal",
+      imageUrl: "https://tailwindui.com/img/logos/48x48/savvycal.svg",
+      lastInvoice: {
+        date: "January 22, 2023",
+        dateTime: "2023-01-22",
+        amount: "$14,000.00",
+        status: "Paid",
+      },
+    },
+    {
+      id: 3,
+      name: "Reform",
+      imageUrl: "https://tailwindui.com/img/logos/48x48/reform.svg",
+      lastInvoice: {
+        date: "January 23, 2023",
+        dateTime: "2023-01-23",
+        amount: "$7,600.00",
+        status: "Paid",
+      },
+    },
+  ]);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleNewInvoiceClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   useEffect(() => {
     async function getUser() {
       const currentUser = await fetchCurrentUser();
       setUser(currentUser);
     }
+    const getSubmissions = async () => {
+      try {
+        const response = await fetch(
+          `/${apiLinks.main}/submissions?userId=` + user.id
+        );
+        const submissions = await response.json();
+        console.log(submissions);
+        setClients(submissions);
+      } catch (error) {
+        console.error("Error fetching submissions:", error);
+      }
+    };
+
+    getSubmissions();
 
     getUser();
-  }, []);
+  }, []); //Add in userid later
 
   return (
     <>
@@ -252,32 +256,40 @@ export default function Dashboard() {
 
       <main>
         <div className="relative isolate overflow-hidden pt-16">
-          {/* Secondary navigation */}
           <header className="pb-4 pt-6 sm:pb-6">
             <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8">
               <h1 className="text-base font-semibold leading-7 text-gray-900">
-                Cashflow
+                Points
               </h1>
               <div className="order-last flex w-full gap-x-8 text-sm font-semibold leading-6 sm:order-none sm:w-auto sm:border-l sm:border-gray-200 sm:pl-6 sm:leading-7">
-                {secondaryNavigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={
-                      item.current ? "text-indigo-600" : "text-gray-700"
-                    }
-                  >
-                    {item.name}
-                  </a>
-                ))}
+                <a key="Overview" href="#" className={"text-indigo-600"}>
+                  Overview
+                </a>
               </div>
-              <a
-                href="#"
+              <button
+                onClick={handleNewInvoiceClick}
                 className="ml-auto flex items-center gap-x-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 <PlusSmallIcon className="-ml-1.5 h-5 w-5" aria-hidden="true" />
                 New invoice
-              </a>
+              </button>
+              {/* Modal */}
+              {showModal && (
+                <div className="modal">
+                  <div className="modal-content">
+                    <h2>New Invoice</h2>
+                    {/* Form */}
+                    <form>
+                      {/* Form fields */}
+                      {/* ... */}
+
+                      {/* Submit button */}
+                      <button type="submit">Create Invoice</button>
+                    </form>
+                    <button onClick={handleCloseModal}>Close</button>
+                  </div>
+                </div>
+              )}
             </div>
           </header>
 
@@ -469,16 +481,16 @@ export default function Dashboard() {
                         className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"
                       />
                       <div className="text-sm font-medium leading-6 text-gray-900">
-                        {client.name}
+                        Recycling Submission
                       </div>
                       <Menu as="div" className="relative ml-auto">
-                        <Menu.Button className="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500">
+                        <MenuButton className="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500">
                           <span className="sr-only">Open options</span>
                           <EllipsisHorizontalIcon
                             className="h-5 w-5"
                             aria-hidden="true"
                           />
-                        </Menu.Button>
+                        </MenuButton>
                         <Transition
                           as={Fragment}
                           enter="transition ease-out duration-100"
@@ -488,8 +500,8 @@ export default function Dashboard() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                            <Menu.Item>
+                          <MenuItems className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                            <MenuItems>
                               {({ active }) => (
                                 <a
                                   href="#"
@@ -504,8 +516,8 @@ export default function Dashboard() {
                                   </span>
                                 </a>
                               )}
-                            </Menu.Item>
-                            <Menu.Item>
+                            </MenuItems>
+                            <MenuItems>
                               {({ active }) => (
                                 <a
                                   href="#"
@@ -520,8 +532,8 @@ export default function Dashboard() {
                                   </span>
                                 </a>
                               )}
-                            </Menu.Item>
-                          </Menu.Items>
+                            </MenuItems>
+                          </MenuItems>
                         </Transition>
                       </Menu>
                     </div>
