@@ -10,6 +10,7 @@ import {
   LockClosedIcon,
   ServerIcon,
 } from "@heroicons/react/20/solid";
+import Image from "next/image";
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -232,11 +233,7 @@ export default function LandingPage() {
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt=""
-              />
+              <Image src="/appIcon.png" alt="Logo" width={200} height={200} />
             </a>
           </div>
           <div className="flex lg:hidden">

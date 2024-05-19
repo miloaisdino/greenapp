@@ -28,17 +28,16 @@ export default function Update() {
 
   useEffect(() => {
     // Fetch the current user's data from the server
-    const fetchUserData = async () => {
+    async function fetchUserData() {
       try {
-        const response = await fetch(`/${apiLinks.main}/user`);
-        const userData = await response.json();
-        setPointsBalance(userData.points_balance);
-        setDateJoined(userData.date_joined);
+        const currentUser = await fetchCurrentUser();
+        setPointsBalance(currentUser.points_balance);
+        setDateJoined(currentUser.date_joined);
       } catch (error) {
         console.error("Error fetching user data:", error);
         toast.error("An error occurred when fetching user data.");
       }
-    };
+    }
 
     fetchUserData();
   }, []);
@@ -78,7 +77,7 @@ export default function Update() {
   };
 
   return (
-    <form className="m-8" onsubmit={handleSubmit}>
+    <form className="m-8" onSubmit={handleSubmit}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
