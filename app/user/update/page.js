@@ -1,10 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import apiLinks from "@/app/pages/api";
+import { toast } from "react-toastify";
 
 export default function Update() {
   const data = {
+    //Sample data
     username: "keith",
     password: "123",
     email: "",
@@ -20,9 +23,61 @@ export default function Update() {
   const [profile_picture_url, setProfilePictureUrl] = useState(
     data.profile_picture_url
   );
+  const [points_balance, setPointsBalance] = useState(data.points_balance);
+  const [date_joined, setDateJoined] = useState(data.date_joined);
+  useEffect(() => {
+    // Fetch the current user's data from the server
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`/${apiLinks.main}/user`);
+        const userData = await response.json();
+        setPointsBalance(userData.points_balance);
+        setDateJoined(userData.date_joined);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast.error("An error occurred when fetching user data.");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Create a data object with the form inputs
+    const data = {
+      username,
+      password,
+      email,
+      full_name,
+      profile_picture_url,
+      points_balance,
+      date_joined,
+    };
+
+    // Make a POST request to localhost:8000/user with the form data
+    fetch(`http://${apiLinks.main}/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        // Handle the response from the server
+        console.log(result);
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error(error);
+        toast.error("An error occurred. Please try again.");
+      });
+  };
 
   return (
-    <form className="m-8">
+    <form className="m-8" onsubmit={handleSubmit}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
