@@ -16,6 +16,13 @@
   }
 }
 
+/* Ensure the html and body take the full height of the viewport */
+html,
+body {
+  height: 100%;
+  margin: 0; /* Remove default margin */
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
