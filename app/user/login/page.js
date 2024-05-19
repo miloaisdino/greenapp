@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -101,6 +102,15 @@ export default function Login() {
               </button>
             </div>
           </form>
+          <div className="mt-4 text-center">
+            Don't have an account?{" "}
+            <a
+              href="/user/registration"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Register here
+            </a>
+          </div>
         </div>
       </div>
     </>
