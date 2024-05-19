@@ -58,7 +58,7 @@ export default function Update() {
 
     // Make a POST request to localhost:8000/user with the form data
     fetch(`http://${apiLinks.main}/user`, {
-      method: "POST",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
