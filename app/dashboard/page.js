@@ -101,7 +101,6 @@ function classNames(...classes) {
 }
 
 export default function Dashboard() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [clients, setClients] = useState([
     {
@@ -139,7 +138,7 @@ export default function Dashboard() {
     },
   ]);
   const [showModal, setShowModal] = useState(false);
-  const [formValues, setFormValues] = useState({
+  const [formDetails, setFormDetails] = useState({
     image_url: "",
     description: "",
   });
@@ -174,7 +173,8 @@ export default function Dashboard() {
       });
   };
 
-  const toggleModla = () => {
+  const toggleModal = () => {
+    console.log("toggling modal" + showModal);
     setShowModal(!showModal);
   };
 
@@ -236,8 +236,8 @@ export default function Dashboard() {
         <Dialog
           as="div"
           className="lg:hidden"
-          open={mobileMenuOpen}
-          onClose={setMobileMenuOpen}
+          open={showModal}
+          onClose={toggleModal}
         >
           {navigation.map((item) => (
             <a
@@ -248,6 +248,18 @@ export default function Dashboard() {
               {item.name}
             </a>
           ))}
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={formDetails.description}
+            onChange={(e) =>
+              setFormDetails({ ...formDetails, email: e.target.value })
+            }
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
         </Dialog>
       </header>
 
@@ -264,14 +276,15 @@ export default function Dashboard() {
                 </a>
               </div>
               <button
-                onClick={handleNewInvoiceClick}
+                onClick={toggleModal}
                 className="ml-auto flex items-center gap-x-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 <PlusSmallIcon className="-ml-1.5 h-5 w-5" aria-hidden="true" />
                 New invoice
               </button>
               {/* Modal */}
-              {showModal && <SubmissionModal onClose={handleCloseModal} />}
+
+              {showModal && <SubmissionModal handleSubmit={handleSubmit} />}
             </div>
           </header>
 
