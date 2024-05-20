@@ -1,11 +1,18 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, PhotoIcon } from "@heroicons/react/24/outline";
 
-export default function Example({ handleSubmit }) {
-  const [open, setOpen] = useState(true);
-
+export default function SubmissionModal({
+  handleSubmit,
+  toggleModal,
+  open,
+  formDetails,
+  setFormDetails,
+}) {
   const cancelButtonRef = useRef(null);
+  const handleFileUpload = (e) => {
+    console.log(e.target.files[0]);
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -13,7 +20,7 @@ export default function Example({ handleSubmit }) {
         as="div"
         className="relative z-10"
         initialFocus={cancelButtonRef}
-        onClose={setOpen}
+        onClose={toggleModal}
       >
         <Transition.Child
           as={Fragment}
@@ -51,15 +58,60 @@ export default function Example({ handleSubmit }) {
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      Payment successful
+                      Please input details of your submission
                     </Dialog.Title>
+
+                    <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                      <div className="text-center">
+                        <PhotoIcon
+                          className="mx-auto h-12 w-12 text-gray-300"
+                          aria-hidden="true"
+                        />
+                        <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                          <label
+                            htmlFor="file-upload"
+                            className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                          >
+                            <span>Upload a file</span>
+                            <input
+                              id="file-upload"
+                              name="file-upload"
+                              type="file"
+                              className="sr-only"
+                              onChange={(e) => handleFileUpload(e)}
+                            />
+                          </label>
+                          <p className="pl-1">or drag and drop</p>
+                        </div>
+                        <p className="text-xs leading-5 text-gray-600">
+                          PNG, JPG, GIF up to 10MB
+                        </p>
+                      </div>
+                    </div>
+                    <label
+                      htmlFor="username"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Username
+                    </label>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Eius aliquam laudantium explicabo pariatur iste
-                        dolorem animi vitae error totam. At sapiente aliquam
-                        accusamus facere veritatis.
-                      </p>
+                      <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                        <input
+                          type="text"
+                          name="username"
+                          id="username"
+                          autoComplete="username"
+                          className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                          required
+                          defaultValue={formDetails.description}
+                          onChange={(e) =>
+                            setFormDetails({
+                              ...formDetails,
+                              username: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -67,14 +119,14 @@ export default function Example({ handleSubmit }) {
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                    onClick={() => onclose()}
+                    onClick={() => handleSubmit()}
                   >
                     Deactivate
                   </button>
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-                    onClick={() => handleSubmit("yes")}
+                    onClick={toggleModal}
                     ref={cancelButtonRef}
                   >
                     Cancel

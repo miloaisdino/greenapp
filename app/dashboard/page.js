@@ -151,15 +151,13 @@ export default function Dashboard() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-
     // Make a POST request to localhost:8000/user with the form data
     fetch(`http://${apiLinks.main}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(formDetails),
     })
       .then((response) => response.json())
       .then((result) => {
@@ -171,6 +169,7 @@ export default function Dashboard() {
         console.error(error);
         toast.error("An error occurred. Please try again.");
       });
+    toggleModal();
   };
 
   const toggleModal = () => {
@@ -233,34 +232,6 @@ export default function Dashboard() {
             </a>
           </div>
         </div>
-        <Dialog
-          as="div"
-          className="lg:hidden"
-          open={showModal}
-          onClose={toggleModal}
-        >
-          {navigation.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-            >
-              {item.name}
-            </a>
-          ))}
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={formDetails.description}
-            onChange={(e) =>
-              setFormDetails({ ...formDetails, email: e.target.value })
-            }
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-          />
-        </Dialog>
       </header>
 
       <main>
@@ -284,7 +255,7 @@ export default function Dashboard() {
               </button>
               {/* Modal */}
 
-              {showModal && <SubmissionModal handleSubmit={handleSubmit} />}
+              {showModal && <SubmissionModal handleSubmit={handleSubmit} toggleModal={toggleModal} open={showModal} formDetails={formDetails} setFormDetails={setFormDetails}/>}
             </div>
           </header>
 
