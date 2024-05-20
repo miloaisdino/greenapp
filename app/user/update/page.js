@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import apiLinks from "@/app/pages/api";
 import { toast } from "react-toastify";
+import { fetchCurrentUser } from "@/app/component/fetchUser";
 
 export default function Update() {
   const data = {
@@ -16,28 +17,31 @@ export default function Update() {
     points_balance: 0,
     date_joined: "",
   };
-  const [username, setUsername] = useState(data.username);
-  const [password, setPassword] = useState(data.password);
-  const [email, setEmail] = useState(data.email);
-  const [full_name, setFullName] = useState(data.full_name);
-  const [profile_picture_url, setProfilePictureUrl] = useState(
-    data.profile_picture_url
-  );
-  const [points_balance, setPointsBalance] = useState(data.points_balance);
-  const [date_joined, setDateJoined] = useState(data.date_joined);
+  const [formDetails, setFormDetails] = useState({
+    username: data.username,
+    password: data.password,
+    email: data.email,
+    full_name: data.full_name,
+    profile_picture_url: data.profile_picture_url,
+    points_balance: data.points_balance,
+    date_joined: data.date_joined,
+  });
 
   useEffect(() => {
     // Fetch the current user's data from the server
     async function fetchUserData() {
       try {
         const currentUser = await fetchCurrentUser();
-        setUsername(currentUser.username);
-        setPassword(currentUser.password);
-        setEmail(currentUser.email);
-        setFullName(currentUser.full_name);
-        setProfilePictureUrl(currentUser.profile_picture_url);
-        setPointsBalance(currentUser.points_balance);
-        setDateJoined(currentUser.date_joined);
+        setFormDetails({
+          ...formDetails,
+          username: currentUser.username,
+          password: currentUser.password,
+          email: currentUser.email,
+          full_name: currentUser.full_name,
+          profile_picture_url: currentUser.profile_picture_url,
+          points_balance: currentUser.points_balance,
+          date_joined: currentUser.date_joined,
+        });
       } catch (error) {
         console.error("Error fetching user data:", error);
         toast.error("An error occurred when fetching user data.");
@@ -45,7 +49,7 @@ export default function Update() {
     }
 
     fetchUserData();
-  }, []);
+  }, [formDetails]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -110,8 +114,13 @@ export default function Update() {
                     autoComplete="username"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     required
-                    defaultValue={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    defaultValue={formDetails.username}
+                    onChange={(e) =>
+                      setFormDetails({
+                        ...formDetails,
+                        username: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -132,8 +141,13 @@ export default function Update() {
                     autoComplete="password"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     required
-                    defaultValue={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    defaultValue={formDetails.password}
+                    onChange={(e) =>
+                      setFormDetails({
+                        ...formDetails,
+                        password: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -221,8 +235,13 @@ export default function Update() {
                   autoComplete="full-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   required
-                  defaultValue={full_name}
-                  onChange={(e) => setFullName(e.target.value)}
+                  defaultValue={formDetails.full_name}
+                  onChange={(e) =>
+                    setFormDetails({
+                      ...formDetails,
+                      full_name: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -242,8 +261,10 @@ export default function Update() {
                   autoComplete="email"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   required
-                  onChange={(e) => setEmail(e.target.value)}
-                  defaultValue={email}
+                  defaultValue={formDetails.email}
+                  onChange={(e) =>
+                    setFormDetails({ ...formDetails, email: e.target.value })
+                  }
                 />
               </div>
             </div>

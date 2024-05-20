@@ -8,17 +8,14 @@ import Image from "next/image";
 /* eslint-disable @next/next/no-img-element */
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formDetails, setFormDetails] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Create a data object with the form inputs
-    const data = {
-      email,
-      password,
-    };
+    console.log(formDetails);
 
     // Make a POST request to localhost:8000/user with the form data
     fetch(`http://${apiLinks.main}/user`, {
@@ -26,7 +23,7 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(formDetails),
     })
       .then((response) => response.json())
       .then((result) => {
@@ -66,8 +63,10 @@ export default function Login() {
                   type="email"
                   autoComplete="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formDetails.email}
+                  onChange={(e) =>
+                    setFormDetails({ ...formDetails, email: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -87,8 +86,10 @@ export default function Login() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formDetails.password}
+                  onChange={(e) =>
+                    setFormDetails({ ...formDetails, password: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>

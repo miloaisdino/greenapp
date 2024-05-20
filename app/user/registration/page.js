@@ -16,29 +16,19 @@ export default function Update() {
     points_balance: 0,
     date_joined: "",
   };
-  const [username, setUsername] = useState(data.username);
-  const [password, setPassword] = useState(data.password);
-  const [email, setEmail] = useState(data.email);
-  const [full_name, setFullName] = useState(data.full_name);
-  const [profile_picture_url, setProfilePictureUrl] = useState(
-    data.profile_picture_url
-  );
-  const points_balance = 0;
-  const date_joined = new Date().toLocaleDateString();
+  const [formDetails, setFormDetails] = useState({
+    username: data.username,
+    password: data.password,
+    email: data.email,
+    full_name: data.full_name,
+    profile_picture_url: data.profile_picture_url,
+    points_balance: 0,
+    date_joined: new Date().toLocaleDateString(),
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Create a data object with the form inputs
-    const data = {
-      username,
-      password,
-      email,
-      full_name,
-      profile_picture_url,
-      points_balance,
-      date_joined,
-    };
+    console.log(formDetails);
 
     // Make a POST request to localhost:8000/user with the form data
     fetch(`http://${apiLinks.main}/user`, {
@@ -46,7 +36,7 @@ export default function Update() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(formDetails),
     })
       .then((response) => response.json())
       .then((result) => {
@@ -89,8 +79,13 @@ export default function Update() {
                     autoComplete="username"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     required
-                    defaultValue={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    defaultValue={formDetails.username}
+                    onChange={(e) =>
+                      setFormDetails({
+                        ...formDetails,
+                        username: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -111,8 +106,13 @@ export default function Update() {
                     autoComplete="password"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     required
-                    defaultValue={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    defaultValue={formDetails.password}
+                    onChange={(e) =>
+                      setFormDetails({
+                        ...formDetails,
+                        password: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -163,6 +163,7 @@ export default function Update() {
                         name="file-upload"
                         type="file"
                         className="sr-only"
+                        onChange={(e) => console.log(e.target.files[0])}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
@@ -200,8 +201,13 @@ export default function Update() {
                   autoComplete="full-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   required
-                  defaultValue={full_name}
-                  onChange={(e) => setFullName(e.target.value)}
+                  defaultValue={formDetails.full_name}
+                  onChange={(e) =>
+                    setFormDetails({
+                      ...formDetails,
+                      full_name: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -221,8 +227,10 @@ export default function Update() {
                   autoComplete="email"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   required
-                  onChange={(e) => setEmail(e.target.value)}
-                  defaultValue={email}
+                  onChange={(e) =>
+                    setFormDetails({ ...formDetails, email: e.target.value })
+                  }
+                  defaultValue={formDetails.email}
                 />
               </div>
             </div>
