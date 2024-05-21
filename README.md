@@ -22,7 +22,7 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## API Documentation
 
-https://greenapp-orbital.stoplight.io/docs/greenapp/mjr6b41icoqy4-standard-public-schema
+[OpenAPI spec](https://greenapp-orbital.stoplight.io/docs/greenapp)
 
 ## Deploy on Vercel
 
