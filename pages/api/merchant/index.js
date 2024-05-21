@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         const body = req.body;
         const { data, error } = await sclient
-            .from('recycling')
+            .from('merchant')
             .insert([body])
             .select();
 
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
         res.status(201).json({ data });
     } else if (req.method === 'GET') {
         const { data, error } = await sclient
-            .from('recycling')
+            .from('merchant')
             .select('*');
 
         if (error) {
@@ -29,12 +29,12 @@ export default async function handler(req, res) {
         res.status(200).json({ data });
     } else if (req.method === 'PUT') {
         const body = req.body;
-        const { submission_id } = req.query;
+        const { merchant_id } = req.query; // Get merchant_id from query params
 
         const { data, error } = await sclient
-            .from('recycling')
+            .from('merchant')
             .update(body)
-            .eq('submission_id', submission_id)
+            .eq('merchant_id', merchant_id)
             .select();
 
         if (error) {
@@ -44,12 +44,12 @@ export default async function handler(req, res) {
 
         res.status(200).json({ data });
     } else if (req.method === 'DELETE') {
-        const { submission_id } = req.query;
+        const { merchant_id } = req.query; // Get merchant_id from query params
 
         const { data, error } = await sclient
-            .from('recycling')
+            .from('merchant')
             .delete()
-            .eq('submission_id', submission_id)
+            .eq('merchant_id', merchant_id)
             .select();
 
         if (error) {

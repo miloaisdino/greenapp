@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         const body = req.body;
         const { data, error } = await sclient
-            .from('recycling')
+            .from('redemption')
             .insert([body])
             .select();
 
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
         res.status(201).json({ data });
     } else if (req.method === 'GET') {
         const { data, error } = await sclient
-            .from('recycling')
+            .from('redemption')
             .select('*');
 
         if (error) {
@@ -29,12 +29,12 @@ export default async function handler(req, res) {
         res.status(200).json({ data });
     } else if (req.method === 'PUT') {
         const body = req.body;
-        const { submission_id } = req.query;
+        const { redemption_id } = req.query; // Get redemption_id from query params
 
         const { data, error } = await sclient
-            .from('recycling')
+            .from('redemption')
             .update(body)
-            .eq('submission_id', submission_id)
+            .eq('redemption_id', redemption_id)
             .select();
 
         if (error) {
@@ -44,12 +44,12 @@ export default async function handler(req, res) {
 
         res.status(200).json({ data });
     } else if (req.method === 'DELETE') {
-        const { submission_id } = req.query;
+        const { redemption_id } = req.query; // Get redemption_id from query params
 
         const { data, error } = await sclient
-            .from('recycling')
+            .from('redemption')
             .delete()
-            .eq('submission_id', submission_id)
+            .eq('redemption_id', redemption_id)
             .select();
 
         if (error) {
