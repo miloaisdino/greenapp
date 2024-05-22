@@ -12,11 +12,11 @@ import {
 } from "@heroicons/react/20/solid";
 import { BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { fetchCurrentUser } from "../component/fetchUser";
-import apiLinks from "../pages/api";
+import { fetchCurrentUser } from "../../component/fetchUser";
+import apiLinks from "../../pages/api";
 import { MenuButton, MenuItems } from "@headlessui/react";
 import SubmissionModal from "./submissionModal";
-import Header from "../component/header";
+import Header from "../../component/header";
 
 const stats = [
   {
@@ -197,8 +197,6 @@ export default function Dashboard() {
 
   return (
     <>
-      <Header />
-
       <main>
         <div className="relative isolate overflow-hidden pt-16">
           <header className="pb-4 pt-6 sm:pb-6">

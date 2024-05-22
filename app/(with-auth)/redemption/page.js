@@ -2,9 +2,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { fetchCurrentUser } from "../component/fetchUser";
-import apiLinks from "../pages/api";
-import Header from "../component/header";
+import { fetchCurrentUser } from "../../component/fetchUser";
+import apiLinks from "../../pages/api";
+import Header from "../../component/header";
 import { toast } from "react-toastify";
 
 function classNames(...classes) {
@@ -139,7 +139,6 @@ export default function Redemption() {
 
   return (
     <>
-      <Header />
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <header className="text-xl font-bold text-gray-900">
