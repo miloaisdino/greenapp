@@ -6,16 +6,15 @@ import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "../../pages/api";
 import Header from "../../component/header";
 import { toast } from "react-toastify";
-
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import ConfirmationModal from "./confirmationModal";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Redemption() {
   const [user, setUser] = useState(null);
-  const [shoppingCart, setShoppingCart] = useState({
-    items: [],
-  });
+  const [shoppingCart, setShoppingCart] = useState([]);
   const rewards = [
     {
       id: 1,
@@ -75,22 +74,20 @@ export default function Redemption() {
     // More products...
   ];
   const [availableRewards, setAvailableRewards] = useState([]); // Add in rewards later
+  const [showModal, setShowModal] = useState(false);
 
-  const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
+  const toggleModal = (e) => {
+    setShowModal(!showModal);
   };
 
-  const handleSubmit = (e) => {
+  const handleConfirmSubmit = () => {
     // Make a POST request to localhost:8000/user with the form data
     fetch(`http://${apiLinks.main}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formDetails),
+      body: JSON.stringify(shoppingCart),
     })
       .then((response) => response.json())
       .then((result) => {
@@ -102,7 +99,12 @@ export default function Redemption() {
         console.error(error);
         toast.error("An error occurred. Please try again.");
       });
-    toggleModal();
+
+    setShowModal(false);
+  };
+
+  const handleCancelSubmit = () => {
+    setShowModal(false);
   };
 
   useEffect(() => {
@@ -130,19 +132,32 @@ export default function Redemption() {
   }, []); //Add in userid later
 
   const handleAddToCart = (reward) => {
-    setShoppingCart((prevCart) => ({
-      ...prevCart,
-      items: [...prevCart.items, reward],
-    }));
+    console.log(shoppingCart);
+    setShoppingCart((prevCart) => [...prevCart, reward]);
     console.log(shoppingCart);
   };
 
   return (
     <>
       <div className="bg-white">
+        {showModal && (
+          <ConfirmationModal
+            open={showModal}
+            handleConfirmSubmit={handleConfirmSubmit}
+            handleCancelSubmit={handleCancelSubmit}
+            toggleModal={toggleModal}
+            content={shoppingCart.map((item) => item.name)}
+          />
+        )}
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <header className="text-xl font-bold text-gray-900">
-            Available Rewards
+          <header className="text-xl font-bold text-gray-900 flex justify-between items-center">
+            <div>Available Rewards</div>
+            <button
+              className="text-sm font-medium text-gray-900"
+              onClick={toggleModal}
+            >
+              <ShoppingCartIcon className="h-6 w-6" />
+            </button>
           </header>
 
           <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
