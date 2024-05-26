@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "../../pages/api";
-import Header from "../../component/header";
 import { toast } from "react-toastify";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import ConfirmationModal from "./confirmationModal";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -14,7 +12,6 @@ function classNames(...classes) {
 
 export default function Redemption() {
   const [user, setUser] = useState(null);
-  const [shoppingCart, setShoppingCart] = useState([]);
   const rewards = [
     {
       id: 1,
@@ -74,6 +71,7 @@ export default function Redemption() {
     // More products...
   ];
   const [availableRewards, setAvailableRewards] = useState([]); // Add in rewards later
+  const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = (e) => {
@@ -131,12 +129,6 @@ export default function Redemption() {
     getUser();
   }, []); //Add in userid later
 
-  const handleAddToCart = (reward) => {
-    console.log(shoppingCart);
-    setShoppingCart((prevCart) => [...prevCart, reward]);
-    console.log(shoppingCart);
-  };
-
   return (
     <>
       <div className="bg-white">
@@ -146,18 +138,18 @@ export default function Redemption() {
             handleConfirmSubmit={handleConfirmSubmit}
             handleCancelSubmit={handleCancelSubmit}
             toggleModal={toggleModal}
-            content={shoppingCart.map((item) => item.name)}
+            content={
+              "Confirm purchase of " +
+              selectedItem.name +
+              " for " +
+              selectedItem.price +
+              "?"
+            }
           />
         )}
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <header className="text-xl font-bold text-gray-900 flex justify-between items-center">
             <div>Available Rewards</div>
-            <button
-              className="text-sm font-medium text-gray-900"
-              onClick={toggleModal}
-            >
-              <ShoppingCartIcon className="h-6 w-6" />
-            </button>
           </header>
 
           <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
@@ -189,10 +181,13 @@ export default function Redemption() {
                 </div>
                 <div className="mt-6">
                   <button
-                    onClick={() => handleAddToCart(reward)}
+                    onClick={() => {
+                      setSelectedItem(reward);
+                      setShowModal(true);
+                    }}
                     className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 w-full"
                   >
-                    Add to bag<span className="sr-only">, {reward.name}</span>
+                    Redeem<span className="sr-only">, {reward.name}</span>
                   </button>
                 </div>
               </div>
