@@ -4,7 +4,7 @@ import { BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const Header = () => {
   const navigation = [
-    { name: "Home", href: "#" },
+    { name: "Home", href: "/dashboard" },
     { name: "Redeem Rewards", href: "/redemption" },
     { name: "Contact", href: "#" },
   ];
