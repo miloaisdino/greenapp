@@ -1,16 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
-import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  ArrowPathIcon,
-  ChevronRightIcon,
-  CloudArrowUpIcon,
-  LockClosedIcon,
-  ServerIcon,
-} from "@heroicons/react/20/solid";
-import Image from "next/image";
+import GreenAppIcon from "@/public/greenAppIcon.svg";
 
 const navigation = [
   { name: "Rewards", href: "/reward" },
@@ -127,7 +119,7 @@ export default function LandingPage() {
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <Image src="/appIcon.png" alt="Logo" width={200} height={200} />
+              <GreenAppIcon className="h-16 w-32 ml-16" />
             </a>
           </div>
           <div className="flex lg:hidden">

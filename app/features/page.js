@@ -15,6 +15,7 @@ import NextIcon from "@/public/nextjsIcon.svg";
 import SupabaseIcon from "@/public/supabaseIcon.svg";
 import TailwindIcon from "@/public/tailwindIcon.svg";
 import VercelIcon from "@/public/vercelIcon.svg";
+import GreenAppIcon from "@/public/greenAppIcon.svg";
 
 const navigation = [
   { name: "Rewards", href: "/reward" },
@@ -237,7 +238,7 @@ export default function Features() {
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <Image src="/appIcon.png" alt="Logo" width={200} height={200} />
+              <GreenAppIcon className="h-16 w-32 ml-16" />
             </a>
           </div>
           <div className="flex lg:hidden">
