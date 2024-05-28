@@ -8,22 +8,22 @@ import { toast } from "react-toastify";
 export default function Update() {
   const data = {
     //Sample data
-    username: "",
+    display_name: "",
     password: "",
     email: "",
     full_name: "",
     profile_picture_url: "",
-    points_balance: 0,
-    date_joined: "",
+    //points_balance: 0,
+    //date_joined: "",
   };
   const [formDetails, setFormDetails] = useState({
-    username: data.username,
+    display_name: data.display_name,
     password: data.password,
     email: data.email,
     full_name: data.full_name,
     profile_picture_url: data.profile_picture_url,
-    points_balance: 0,
-    date_joined: new Date().toLocaleDateString(),
+    //points_balance: 0,
+    //date_joined: new Date().toLocaleDateString(),
   });
 
   const handleSubmit = (e) => {
@@ -31,7 +31,7 @@ export default function Update() {
     console.log(formDetails);
 
     // Make a POST request to localhost:8000/user with the form data
-    fetch(`http://${apiLinks.main}/user`, {
+    fetch(`http://${apiLinks.main}/api/user/update`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -2,7 +2,7 @@ import apiLinks from "../pages/api";
 
 export async function fetchCurrentUser() {
   try {
-    const response = await fetch(`/${apiLinks.main}/current-user`, {
+    const response = await fetch(`${apiLinks.main}/api/user/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import {useState} from "react";
-import {ToastContainer, toast} from 'react-toastify';
+import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiLinks from "@/app/pages/api";
 import Image from "next/image";
-import {createClient} from '@/lib/supabase/component'
-import {useRouter} from "next/navigation";
+import { createClient } from '@/lib/supabase/component'
+import { useRouter } from "next/navigation";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -22,17 +22,17 @@ export default function Login() {
         e.preventDefault();
         console.log(formDetails);
 
-        const {error} = await supabase.auth.signInWithPassword(formDetails)
+        const {error, data} = await supabase.auth.signUp(formDetails)
         if (error) {
-            console.log(error);
-            if (error.message === "Email not confirmed") {
-                toast.info("Please check your inbox for verification email");
-            } else {
-                toast.error("Login failed. Please try again.");
-            }
+            console.error(error);
+            toast.error(error.message);
         } else {
-            toast.success("Login successful, redirecting...");
-            router.push('/dashboard');
+            console.log(data);
+            if(data.user.identities.length > 0){
+                toast.success("Signup successful, please check email verification...");
+            } else {
+                toast.warning("Email already exists");
+            }
         }
     };
 
@@ -40,11 +40,11 @@ export default function Login() {
         <>
             <div className="flex h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="flex justify-center">
-                    <Image src="/appIcon.png" alt="Logo" width={200} height={200}/>
+                    <Image src="/appIcon.png" alt="Logo" width={200} height={200} />
                 </div>
 
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                    Sign in to your account
+                    Welcome to the club!
                 </h2>
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" onSubmit={handleSubmit}>
@@ -53,7 +53,7 @@ export default function Login() {
                                 htmlFor="email"
                                 className="block text-sm font-medium leading-6 text-gray-900"
                             >
-                                Email address
+                                Your Email
                             </label>
                             <div className="mt-2">
                                 <input
@@ -76,7 +76,7 @@ export default function Login() {
                                 htmlFor="password"
                                 className="block text-sm font-medium leading-6 text-gray-900"
                             >
-                                Password
+                                Create password
                             </label>
                             <div className="mt-2">
                                 <input
@@ -99,24 +99,20 @@ export default function Login() {
                                 type="submit"
                                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                Sign in
+                                Register
                             </button>
+                            <a type="button"
+                                    href="/login"
+                                    className="flex w-full justify-center rounded-lg px-3 py-1.5 text-sm
+                                    font-semibold leading-6 text-gray-900 mt-2.5
+                                    focus:outline-none bg-white border border-gray-200
+                                    hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100
+                                    dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600
+                                    dark:hover:text-white dark:hover:bg-gray-700">
+                                Go Back
+                            </a>
                         </div>
                     </form>
-                    <div className="mt-4 text-center">
-                        <p className="text-gray-500 dark:text-gray-400">Don't have an account?{" "}
-                            <a href="/signup-by-email"
-                               className="inline-flex items-center font-medium text-indigo-600 hover:underline">
-                                Email Signup
-                                <svg className="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     fill="none" viewBox="0 0 14 10">
-                                    <path stroke="currentColor"
-                                          d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                </svg>
-                            </a>
-                        </p>
-                    </div>
                 </div>
             </div>
             <ToastContainer/>
