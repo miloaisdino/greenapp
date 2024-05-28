@@ -11,6 +11,7 @@ import TailwindIcon from "@/public/tailwindIcon.svg";
 import VercelIcon from "@/public/vercelIcon.svg";
 import MainFooter from "../component/mainFooter";
 import MainHeader from "../component/mainHeader";
+import DashboardSS from "@/public/Dashboard-Screenshot.svg";
 
 const primaryFeatures = [
   {
@@ -79,13 +80,21 @@ export default function Features() {
                   its full potential.
                 </p>
               </div>
-              <img
-                src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
-                alt="Product screenshot"
+              {/* <img
+                src="/Dashboard-Screenshot.png"
+                alt="Dashboard screenshot"
                 className="relative -z-20 min-w-full max-w-xl rounded-xl shadow-xl ring-1 ring-white/10 lg:row-span-4 lg:w-[64rem] lg:max-w-none"
-                width={2432}
-                height={1442}
-              />
+                // width={10}
+                // height={10}
+              /> */}
+              {/* <Image
+                src="/Dashboard-Screenshot.png"
+                alt="Dashboard screenshot"
+                width={10}
+                height={10}
+                className="relative -z-20 min-w-full max-w-xl rounded-xl shadow-xl ring-1 ring-white/10 lg:row-span-4 lg:w-[64rem] lg:max-w-none"
+              /> */}
+              <DashboardSS className="relative -z-20 min-w-full max-w-xl rounded-xl shadow-xl ring-1 ring-white/10 lg:row-span-4 lg:w-[64rem] lg:max-w-none" />
               <div className="max-w-xl lg:row-start-3 lg:mt-10 lg:max-w-md lg:border-t lg:border-white/10 lg:pt-10">
                 <dl className="max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
                   {primaryFeatures.map((feature) => (

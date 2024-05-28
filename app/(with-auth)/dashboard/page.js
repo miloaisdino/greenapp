@@ -21,11 +21,11 @@ import Header from "../../component/header";
 const stats = [
   {
     name: "Lifetime Points",
-    value: "$405,091.00",
+    value: "925000",
   },
   {
     name: "Current Points",
-    value: "$12,787.00",
+    value: "175000",
   },
   {
     name: "Highest Ranking",
@@ -48,26 +48,32 @@ const days = [
     transactions: [
       {
         submission_id: 1,
+        invoiceNumber: "00001",
+        amount: "30000",
         href: "#", //add in link to submission
         points_awarded: "$7,600.00 USD",
-        status: "Paid",
-        description: "Website redesign",
+        status: "Submitted",
+        description: "Redeemed 1 tote bag",
         icon: ArrowUpCircleIcon,
       },
       {
         submission_id: 2,
+        invoiceNumber: "00002",
+        amount: "5000",
         href: "#", //add in link to submission
         points_awarded: "$7,600.00 USD",
-        status: "Paid",
-        description: "Website redesign",
+        status: "Submitted",
+        description: "Redeemed 2 Starbucks Voucher",
         icon: ArrowUpCircleIcon,
       },
       {
         submission_id: 3,
+        invoiceNumber: "00003",
+        amount: "25000",
         href: "#", //add in link to submission
         points_awarded: "$7,600.00 USD",
-        status: "Paid",
-        description: "Website redesign",
+        status: "Submitted",
+        description: "Redeemed 1 running shoe",
         icon: ArrowUpCircleIcon,
       },
     ],
@@ -80,11 +86,10 @@ const days = [
         id: 4,
         invoiceNumber: "00010",
         href: "#",
-        amount: "$14,000.00 USD",
-        tax: "$900.00",
+        amount: "50000",
         status: "Paid",
-        client: "SavvyCal",
-        description: "Website redesign",
+        // client: "SavvyCal",
+        description: "Redeemed 4 S/U credit",
         icon: ArrowUpCircleIcon,
       },
     ],
@@ -194,7 +199,6 @@ export default function Dashboard() {
       }
     };
     withUser().then(getSubmissions);
-
   }, []); //Add in userid later
 
   return (
