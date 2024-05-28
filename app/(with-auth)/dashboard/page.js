@@ -13,7 +13,7 @@ import {
 import { BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { fetchCurrentUser } from "../../component/fetchUser";
-import apiLinks from "../../pages/api";
+import apiLinks from "@/app/pages/api";
 import { MenuButton, MenuItems } from "@headlessui/react";
 import SubmissionModal from "./submissionModal";
 import Header from "../../component/header";
@@ -147,7 +147,7 @@ export default function Dashboard() {
 
   const handleSubmit = (e) => {
     // Make a POST request to localhost:8000/user with the form data
-    fetch(`http://${apiLinks.main}/user`, {
+    fetch(`${apiLinks.main}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -173,14 +173,18 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    async function getUser() {
+    async function withUser() {
       const currentUser = await fetchCurrentUser();
-      setUser(currentUser);
+      if (user === null) {
+        setUser(currentUser);
+      }
+      return currentUser;
     }
-    const getSubmissions = async () => {
+    const getSubmissions = async (user) => {
       try {
+        console.log(user);
         const response = await fetch(
-          `/${apiLinks.main}/submissions?userId=` + user.id
+          `${apiLinks.main}/submissions?userId=` + user.id
         );
         const submissions = await response.json();
         console.log(submissions);
@@ -189,10 +193,8 @@ export default function Dashboard() {
         console.error("Error fetching submissions:", error);
       }
     };
+    withUser().then(getSubmissions);
 
-    getSubmissions();
-
-    getUser();
   }, []); //Add in userid later
 
   return (

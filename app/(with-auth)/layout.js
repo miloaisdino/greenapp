@@ -12,7 +12,7 @@ export default async function withAuthLayout({children}) {
     } else {
         return (
             <div>
-                <Header/>
+                <Header auth={data} redirect={redirect} />
                 {children}
             </div>
         );
