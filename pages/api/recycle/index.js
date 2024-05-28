@@ -1,4 +1,4 @@
-import * as db from '../../../lib/db.js';
+import * as db from '@/lib/db.js';
 
 export default async function handler(req, res) {
     const sclient = await db.getSupabaseClient();
