@@ -1,7 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-"use client";
-import { useState } from "react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import GreenAppIcon from "@/public/greenAppIcon.svg";
 
 const navigation = [
@@ -12,29 +8,25 @@ const navigation = [
 ];
 
 const footerNavigation = {
-  solutions: [
-    { name: "Marketing", href: "#" },
-    { name: "Analytics", href: "#" },
-    { name: "Commerce", href: "#" },
-    { name: "Insights", href: "#" },
+  programs: [
+    { name: "Recycling Rewards", href: "#" },
+    { name: "Referral", href: "#" },
+    { name: "Commitment Streak", href: "#" },
   ],
-  support: [
-    { name: "Pricing", href: "#" },
-    { name: "Documentation", href: "#" },
-    { name: "Guides", href: "#" },
-    { name: "API Status", href: "#" },
+  resources: [
+    { name: "Green Living", href: "#" },
+    { name: "Eco-friendly Products", href: "#" },
+    { name: "Educational Resources", href: "#" },
   ],
-  company: [
-    { name: "About", href: "#" },
+  about: [
+    { name: "Our Mission", href: "#" },
     { name: "Blog", href: "#" },
-    { name: "Jobs", href: "#" },
-    { name: "Press", href: "#" },
-    { name: "Partners", href: "#" },
+    { name: "Careers", href: "#" },
   ],
   legal: [
-    { name: "Claim", href: "#" },
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" },
+    { name: "Privacy Policy", href: "#" },
+    { name: "Terms of Service", href: "#" },
+    { name: "Cookie Policy", href: "#" },
   ],
   social: [
     {
@@ -101,13 +93,7 @@ const footerNavigation = {
   ],
 };
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <div className="bg-white">
       {/* Header */}
@@ -119,19 +105,10 @@ export default function LandingPage() {
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <GreenAppIcon className="h-16 w-32 ml-16" />
+              <GreenAppIcon className="h-16 w-32" />
             </a>
           </div>
-          <div className="flex lg:hidden">
-            <button
-              type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
+
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <a
@@ -156,7 +133,7 @@ export default function LandingPage() {
 
       <main>
         {/* Hero section */}
-        <div className="relative isolate pt-14">
+        <div className="relative isolate pt-4">
           <svg
             className="absolute inset-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
             aria-hidden="true"
@@ -310,7 +287,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer
-        className="mt-32 bg-gray-900 sm:mt-56"
+        className="mt-16 bg-gray-800 sm:mt-56"
         aria-labelledby="footer-heading"
       >
         <h2 id="footer-heading" className="sr-only">
@@ -318,19 +295,15 @@ export default function LandingPage() {
         </h2>
         <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
           <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-            <img
-              className="h-7"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-              alt="Company name"
-            />
+            <GreenAppIcon className="h-32 w-64" />
             <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
               <div className="md:grid md:grid-cols-2 md:gap-8">
                 <div>
                   <h3 className="text-sm font-semibold leading-6 text-white">
-                    Solutions
+                    Programs
                   </h3>
                   <ul role="list" className="mt-6 space-y-4">
-                    {footerNavigation.solutions.map((item) => (
+                    {footerNavigation.programs.map((item) => (
                       <li key={item.name}>
                         <a
                           href={item.href}
@@ -344,10 +317,10 @@ export default function LandingPage() {
                 </div>
                 <div className="mt-10 md:mt-0">
                   <h3 className="text-sm font-semibold leading-6 text-white">
-                    Support
+                    Resources
                   </h3>
                   <ul role="list" className="mt-6 space-y-4">
-                    {footerNavigation.support.map((item) => (
+                    {footerNavigation.resources.map((item) => (
                       <li key={item.name}>
                         <a
                           href={item.href}
@@ -363,10 +336,10 @@ export default function LandingPage() {
               <div className="md:grid md:grid-cols-2 md:gap-8">
                 <div>
                   <h3 className="text-sm font-semibold leading-6 text-white">
-                    Company
+                    About
                   </h3>
                   <ul role="list" className="mt-6 space-y-4">
-                    {footerNavigation.company.map((item) => (
+                    {footerNavigation.about.map((item) => (
                       <li key={item.name}>
                         <a
                           href={item.href}
@@ -445,7 +418,7 @@ export default function LandingPage() {
               ))}
             </div>
             <p className="mt-8 text-xs leading-5 text-gray-400 md:order-1 md:mt-0">
-              &copy; 2020 Your Company, Inc. All rights reserved.
+              &copy; 2024 GreenApp, Inc. All rights reserved.
             </p>
           </div>
         </div>
