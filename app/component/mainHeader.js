@@ -3,8 +3,7 @@ import GreenAppIcon from "@/public/greenAppIcon.svg";
 const navigation = [
   { name: "Rewards", href: "/reward" },
   { name: "Features", href: "/features" },
-  { name: "Marketplace", href: "#" },
-  { name: "Company", href: "#" },
+  { name: "About Us", href: "#" },
 ];
 
 export default function MainHeader() {
@@ -15,8 +14,8 @@ export default function MainHeader() {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
+          <a href="/" className="-m-1.5 p-1.5">
+            <span className="sr-only">GreenApp</span>
             <GreenAppIcon className="h-16 w-32" />
           </a>
         </div>

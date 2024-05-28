@@ -108,7 +108,7 @@ export default function MainFooter() {
                   {footerNavigation.programs.map((item) => (
                     <li key={item.name}>
                       <a
-                        href={item.href}
+                        href={`https://www.google.com/search?q=${item.name}`}
                         className="text-sm leading-6 text-gray-300 hover:text-white"
                       >
                         {item.name}
@@ -125,7 +125,7 @@ export default function MainFooter() {
                   {footerNavigation.resources.map((item) => (
                     <li key={item.name}>
                       <a
-                        href={item.href}
+                        href={`https://www.google.com/search?q=${item.name}`}
                         className="text-sm leading-6 text-gray-300 hover:text-white"
                       >
                         {item.name}
@@ -144,7 +144,7 @@ export default function MainFooter() {
                   {footerNavigation.about.map((item) => (
                     <li key={item.name}>
                       <a
-                        href={item.href}
+                        href={`https://www.google.com/search?q=${item.name}`}
                         className="text-sm leading-6 text-gray-300 hover:text-white"
                       >
                         {item.name}
@@ -161,7 +161,7 @@ export default function MainFooter() {
                   {footerNavigation.legal.map((item) => (
                     <li key={item.name}>
                       <a
-                        href={item.href}
+                        href={`https://www.google.com/search?q=${item.name}`}
                         className="text-sm leading-6 text-gray-300 hover:text-white"
                       >
                         {item.name}
