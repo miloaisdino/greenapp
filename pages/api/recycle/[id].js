@@ -23,8 +23,8 @@ export default async function handler(req, res) {
     } else if (req.method === 'GET') {
         const { data, error } = await sclient
             .from('recycling')
-            .eq('user_id', id)
-            .select();
+            .select()
+            .eq('user_id', id);
 
         if (error) {
             res.status(500).json({ error: error.message });
@@ -42,9 +42,9 @@ export default async function handler(req, res) {
         const { data, error } = await sclient
             .from('recycling')
             .update(body)
+            .select()
             .eq('submission_id', submission_id)
-            .eq('user_id', id)
-            .select();
+            .eq('user_id', id);
 
         if (error) {
             res.status(500).json({ error: error.message });
@@ -62,8 +62,7 @@ export default async function handler(req, res) {
             .from('recycling')
             .delete()
             .eq('submission_id', submission_id)
-            .eq('user_id', id)
-            .select();
+            .eq('user_id', id);
 
         if (error) {
             res.status(500).json({ error: error.message });
