@@ -1,6 +1,6 @@
 const apiLinks = {
   // API link for the production environment
-  main: "http://localhost:3000",
+  main: process.env.NEXT_PUBLIC_URL,
 };
 
 // Export the API links
