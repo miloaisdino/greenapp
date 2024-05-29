@@ -1,7 +1,7 @@
 import GreenAppIcon from "@/public/greenAppIcon.svg";
 
 const navigation = [
-  { name: "Rewards", href: "/reward" },
+  { name: "Rewards", href: "/rewards" },
   { name: "Features", href: "/features" },
   { name: "About Us", href: "#" },
 ];

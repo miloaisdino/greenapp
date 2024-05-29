@@ -35,23 +35,23 @@ const primaryFeatures = [
 ];
 const secondaryFeatures = [
   {
-    name: "Automatic backups.",
+    name: "Authentication and Sessions",
     description:
-      "Automatically backs up your data to prevent data loss in case of an emergency.",
-    href: "#",
+      "Allows users to sign up, log in, log out, and reset their password with cookies and sessions.",
+    href: "https://www.npmjs.com/package/cookie-session",
     icon: CloudArrowUpIcon,
   },
   {
-    name: "Secure data storage.",
+    name: "2-Factor Authentication",
     description:
-      "Stores your data in a secure database to prevent unauthorized access.",
-    href: "#",
+      "Adds an extra layer of security to your website with 2FA. Email OTP is sent via mailgun sandbox.",
+    href: "https://mailtrap.io/blog/mailgun-sandbox-tutorial/",
     icon: LockClosedIcon,
   },
   {
-    name: "Mobile application pairing.",
+    name: "Mobile application pairing (coming soon)",
     description:
-      "Pairs with a mobile application to allow users to access your website on the go.",
+      "Pairs with a mobile application to allow users to access the application on the go.",
     href: "#",
     icon: ArrowPathIcon,
   },
@@ -80,20 +80,6 @@ export default function Features() {
                   its full potential.
                 </p>
               </div>
-              {/* <img
-                src="/Dashboard-Screenshot.png"
-                alt="Dashboard screenshot"
-                className="relative -z-20 min-w-full max-w-xl rounded-xl shadow-xl ring-1 ring-white/10 lg:row-span-4 lg:w-[64rem] lg:max-w-none"
-                // width={10}
-                // height={10}
-              /> */}
-              {/* <Image
-                src="/Dashboard-Screenshot.png"
-                alt="Dashboard screenshot"
-                width={10}
-                height={10}
-                className="relative -z-20 min-w-full max-w-xl rounded-xl shadow-xl ring-1 ring-white/10 lg:row-span-4 lg:w-[64rem] lg:max-w-none"
-              /> */}
               <DashboardSS className="relative -z-20 min-w-full max-w-xl rounded-xl shadow-xl ring-1 ring-white/10 lg:row-span-4 lg:w-[64rem] lg:max-w-none" />
               <div className="max-w-xl lg:row-start-3 lg:mt-10 lg:max-w-md lg:border-t lg:border-white/10 lg:pt-10">
                 <dl className="max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">

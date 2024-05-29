@@ -1,4 +1,3 @@
-import GreenAppIcon from "@/public/greenAppIcon.svg";
 import MainFooter from "./component/mainFooter";
 import MainHeader from "./component/mainHeader";
 
