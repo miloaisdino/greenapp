@@ -80,7 +80,7 @@ const footerNavigation = {
 export default function MainFooter() {
   return (
     <footer
-      className="mt-16 bg-gray-800 sm:mt-56"
+      className="mt-8 bg-gray-800 sm:mt-56"
       aria-labelledby="footer-heading"
     >
       <h2 id="footer-heading" className="sr-only">
@@ -89,7 +89,7 @@ export default function MainFooter() {
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <GreenAppIcon className="h-32 w-64" />
-          <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+          <div className="mt-8 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
                 <h3 className="text-sm font-semibold leading-6 text-white">
@@ -108,7 +108,7 @@ export default function MainFooter() {
                   ))}
                 </ul>
               </div>
-              <div className="mt-10 md:mt-0">
+              <div className="mt-8 md:mt-0">
                 <h3 className="text-sm font-semibold leading-6 text-white">
                   Resources
                 </h3>
@@ -144,7 +144,7 @@ export default function MainFooter() {
                   ))}
                 </ul>
               </div>
-              <div className="mt-10 md:mt-0">
+              <div className="mt-8 md:mt-0">
                 <h3 className="text-sm font-semibold leading-6 text-white">
                   Legal
                 </h3>

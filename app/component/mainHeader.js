@@ -1,9 +1,9 @@
 import GreenAppIcon from "@/public/greenAppIcon.svg";
 
 const navigation = [
+  { name: "Home", href: "/" },
   { name: "Rewards", href: "/rewards" },
   { name: "Features", href: "/features" },
-  { name: "About Us", href: "#" },
 ];
 
 export default function MainHeader() {

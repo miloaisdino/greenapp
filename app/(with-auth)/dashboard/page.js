@@ -10,13 +10,11 @@ import {
   EllipsisHorizontalIcon,
   PlusSmallIcon,
 } from "@heroicons/react/20/solid";
-import { BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
 import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "@/app/pages/api";
 import { MenuButton, MenuItems } from "@headlessui/react";
 import SubmissionModal from "./submissionModal";
-import Header from "../../component/header";
+import { createClient } from "@/lib/supabase/component";
 
 const stats = [
   {
@@ -142,6 +140,8 @@ export default function Dashboard() {
     image_url: "",
     description: "",
   });
+  const supabase = createClient();
+  
 
   const handleInputChange = (e) => {
     setFormValues({
