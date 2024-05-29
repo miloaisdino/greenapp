@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useState } from "react";
-import { fetchCurrentUser } from "../component/fetchUser";
 import apiLinks from "../pages/api";
 import { toast } from "react-toastify";
 import MainHeader from "../component/mainHeader";
 import { useRouter } from "next/navigation";
 import MainFooter from "../component/mainFooter";
+import { createClient } from "@/lib/supabase/component";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -71,48 +71,27 @@ export default function Rewards() {
     },
     // More products...
   ];
-  const [availableRewards, setAvailableRewards] = useState([]); // Add in rewards later
+  const [availableRewards, setAvailableRewards] = useState([]);
   const router = useRouter();
-
-  const handleConfirmSubmit = () => {
-    // Make a POST request to localhost:8000/user with the form data
-    fetch(`http://${apiLinks.main}/user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(shoppingCart),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        // Handle the response from the server
-        console.log(result);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error(error);
-        toast.error("An error occurred. Please try again.");
-      });
-  };
+  const supabase = createClient();
 
   useEffect(() => {
-    // Fetch rewards from the server
-    fetch(`${apiLinks.main}/rewards`)
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the response from the server
-        console.log(data);
-        // Update the rewards state with the fetched data
+    const fetchRewards = async () => {
+      try {
+        const { data, error } = await supabase.from("reward").select("*");
+        if (error) {
+          throw new Error(error.message);
+        }
         setAvailableRewards(data);
-      })
-      .catch((error) => {
-        // Handle any errors
+      } catch (error) {
         console.error(error);
         toast.error(
-          "An error occurred with fetching rewards. Please try again."
+          "An error occurred while fetching rewards. Please try again."
         );
-      });
-  }, []); //Add in userid later
+      }
+    };
+    fetchRewards();
+  }, []);
 
   return (
     <>
@@ -124,7 +103,7 @@ export default function Rewards() {
           </header>
 
           <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-            {rewards.map((reward) => (
+            {availableRewards.map((reward) => (
               <div key={reward.id}>
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
