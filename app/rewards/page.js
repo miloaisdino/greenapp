@@ -1,7 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useState } from "react";
-import apiLinks from "../pages/api";
 import { toast } from "react-toastify";
 import MainHeader from "../component/mainHeader";
 import { useRouter } from "next/navigation";
@@ -13,64 +11,6 @@ function classNames(...classes) {
 }
 
 export default function Rewards() {
-  const rewards = [
-    {
-      id: 1,
-      name: "Zip Tote Basket",
-      color: "White and black",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg",
-      imageAlt:
-        "Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.",
-      price: "$140",
-    },
-    {
-      id: 2,
-      name: "Zip Tote Basket",
-      color: "White and black",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg",
-      imageAlt:
-        "Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.",
-      price: "$140",
-    },
-    {
-      id: 3,
-      name: "Zip Tote Basket",
-      color: "White and black",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg",
-      imageAlt:
-        "Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.",
-      price: "$140",
-    },
-    {
-      id: 4,
-      name: "Zip Tote Basket",
-      color: "White and black",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg",
-      imageAlt:
-        "Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.",
-      price: "$140",
-    },
-    {
-      id: 5,
-      name: "Zip Tote Basket",
-      color: "White and black",
-      href: "#",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg",
-      imageAlt:
-        "Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.",
-      price: "$140",
-    },
-    // More products...
-  ];
   const [availableRewards, setAvailableRewards] = useState([]);
   const router = useRouter();
   const supabase = createClient();
@@ -104,12 +44,12 @@ export default function Rewards() {
 
           <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
             {availableRewards.map((reward) => (
-              <div key={reward.id}>
+              <div key={reward.reward_id}>
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
                     <img
-                      src={reward.imageSrc}
-                      alt={reward.imageAlt}
+                      src={reward.image_url}
+                      alt={"Cannot find"}
                       className="h-full w-full object-cover object-center"
                     />
                   </div>
@@ -117,7 +57,6 @@ export default function Rewards() {
                     <h3 className="text-sm font-medium text-gray-900">
                       {reward.name}
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">{reward.color}</p>
                   </div>
                   <div className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
                     <div
@@ -125,7 +64,7 @@ export default function Rewards() {
                       className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
                     />
                     <p className="relative text-lg font-semibold text-white">
-                      {reward.price}
+                      {reward.points_cost} points
                     </p>
                   </div>
                 </div>
