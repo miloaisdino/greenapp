@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Fragment, useEffect, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   ArrowDownCircleIcon,
   ArrowPathIcon,
@@ -12,9 +11,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "@/app/pages/api";
-import { MenuButton, MenuItems } from "@headlessui/react";
 import SubmissionModal from "./submissionModal";
-import { createClient } from "@/lib/supabase/component";
+import { ToastContainer, toast } from "react-toastify";
 
 const stats = [
   {
@@ -35,64 +33,10 @@ const stats = [
   },
 ];
 const statuses = {
-  Paid: "text-green-700 bg-green-50 ring-green-600/20",
-  Withdraw: "text-gray-600 bg-gray-50 ring-gray-500/10",
-  Overdue: "text-red-700 bg-red-50 ring-red-600/10",
+  Successful: "text-green-700 bg-green-50 ring-green-600/20",
+  Pending: "text-gray-600 bg-gray-50 ring-gray-500/10",
+  Failed: "text-red-700 bg-red-50 ring-red-600/10",
 };
-const days = [
-  {
-    date: "Today",
-    dateTime: "2023-03-22",
-    transactions: [
-      {
-        submission_id: 1,
-        invoiceNumber: "00001",
-        amount: "30000",
-        href: "#", //add in link to submission
-        points_awarded: "$7,600.00 USD",
-        status: "Submitted",
-        description: "Redeemed 1 tote bag",
-        icon: ArrowUpCircleIcon,
-      },
-      {
-        submission_id: 2,
-        invoiceNumber: "00002",
-        amount: "5000",
-        href: "#", //add in link to submission
-        points_awarded: "$7,600.00 USD",
-        status: "Submitted",
-        description: "Redeemed 2 Starbucks Voucher",
-        icon: ArrowUpCircleIcon,
-      },
-      {
-        submission_id: 3,
-        invoiceNumber: "00003",
-        amount: "25000",
-        href: "#", //add in link to submission
-        points_awarded: "$7,600.00 USD",
-        status: "Submitted",
-        description: "Redeemed 1 running shoe",
-        icon: ArrowUpCircleIcon,
-      },
-    ],
-  },
-  {
-    date: "Yesterday",
-    dateTime: "2023-03-21",
-    transactions: [
-      {
-        id: 4,
-        invoiceNumber: "00010",
-        href: "#",
-        amount: "50000",
-        status: "Paid",
-        // client: "SavvyCal",
-        description: "Redeemed 4 S/U credit",
-        icon: ArrowUpCircleIcon,
-      },
-    ],
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -100,80 +44,92 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
-  const [clients, setClients] = useState([
-    {
-      id: 1,
-      name: "Tuple",
-      imageUrl: "https://tailwindui.com/img/logos/48x48/tuple.svg",
-      lastInvoice: {
-        date: "December 13, 2022",
-        dateTime: "2022-12-13",
-        amount: "$2,000.00",
-        status: "Overdue",
-      },
-    },
-    {
-      id: 2,
-      name: "SavvyCal",
-      imageUrl: "https://tailwindui.com/img/logos/48x48/savvycal.svg",
-      lastInvoice: {
-        date: "January 22, 2023",
-        dateTime: "2023-01-22",
-        amount: "$14,000.00",
-        status: "Paid",
-      },
-    },
-    {
-      id: 3,
-      name: "Reform",
-      imageUrl: "https://tailwindui.com/img/logos/48x48/reform.svg",
-      lastInvoice: {
-        date: "January 23, 2023",
-        dateTime: "2023-01-23",
-        amount: "$7,600.00",
-        status: "Paid",
-      },
-    },
-  ]);
+  const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formDetails, setFormDetails] = useState({
+    points_awarded: 0,
     image_url: "",
     description: "",
+    user_id: "",
+    status: 0,
   });
-  const supabase = createClient();
-  
+  const [groupedDays, setGroupedDays] = useState([]);
+  // const [redemption, setRedemption] = useState([]);
 
-  const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
+  const groupSubmissionsByDay = (submissions) => {
+    const grouped = {};
+    submissions.forEach((submission, index) => {
+      submission.index = index + 1;
+      const date = submission.submission_date.split("T")[0];
+      if (!grouped[date]) {
+        grouped[date] = [];
+      }
+      grouped[date].push(submission);
     });
+
+    const days = Object.keys(grouped)
+      .map((date) => {
+        const isToday = date === new Date().toISOString().split("T")[0];
+        const isYesterday =
+          date === new Date(Date.now() - 86400000).toISOString().split("T")[0];
+
+        return {
+          date: isToday ? "Today" : isYesterday ? "Yesterday" : "Others",
+          dateTime: date,
+          transactions: grouped[date].map((submission) => ({
+            id: submission.submission_id,
+            invoiceNumber: submission.index,
+            amount: submission.points_awarded,
+            href: "#",
+            status:
+              submission.status == 0
+                ? "Pending"
+                : submission.status == 1
+                ? "Successful"
+                : "Failed",
+            description: submission.description,
+            icon: ArrowUpCircleIcon,
+          })),
+        };
+      })
+      .sort((a, b) => {
+        // Sort by date
+        if (a.date === "Others") return 1;
+        if (b.date === "Others") return -1;
+        return 0;
+      });
+    return days;
   };
 
-  const handleSubmit = (e) => {
-    // Make a POST request to localhost:8000/user with the form data
-    fetch(`${apiLinks.main}/user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formDetails),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        // Handle the response from the server
-        console.log(result);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error(error);
-        toast.error("An error occurred. Please try again.");
+  const handleSubmit = async (e) => {
+    try {
+      const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDetails),
       });
-    toggleModal();
+
+      if (!response.ok) {
+        throw new Error("Failed to submit");
+      }
+
+      const result = await response.json();
+
+      setSubmissions((prevSubmissions) => [...prevSubmissions, result.data[0]]);
+      const groupedDays = groupSubmissionsByDay(submissions);
+      setGroupedDays(groupedDays);
+      setFormDetails({ image_url: "", description: "" });
+      // setShowModal(false);
+      toast.success("Submission successful");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+    setShowModal(false);
   };
 
   const toggleModal = () => {
-    console.log("toggling modal" + showModal);
     setShowModal(!showModal);
   };
 
@@ -182,18 +138,23 @@ export default function Dashboard() {
       const currentUser = await fetchCurrentUser();
       if (user === null) {
         setUser(currentUser);
+        setFormDetails({ ...formDetails, user_id: currentUser.id });
       }
       return currentUser;
     }
     const getSubmissions = async (user) => {
       try {
-        console.log(user);
-        const response = await fetch(
-          `${apiLinks.main}/api/recycle/` + user.id
-        );
+        const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
         const submissions = await response.json();
-        console.log(submissions);
-        setClients(submissions.data);
+        setSubmissions(submissions.data);
+        const groupedDays = groupSubmissionsByDay(submissions.data);
+        setGroupedDays(groupedDays);
+
+        // const redemptionResponse = await fetch(
+        //   `${apiLinks.main}/api/redemption/` + user.id
+        // );
+        // const redemption = await redemptionResponse.json();
+        // setRedemption(redemption.data);
       } catch (error) {
         console.error("Error fetching submissions:", error);
       }
@@ -306,7 +267,7 @@ export default function Dashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {days.map((day) => (
+                      {groupedDays.map((day) => (
                         <Fragment key={day.dateTime}>
                           <tr className="text-sm leading-6 text-gray-900">
                             <th
@@ -330,7 +291,7 @@ export default function Dashboard() {
                                   <div className="flex-auto">
                                     <div className="flex items-start gap-x-3">
                                       <div className="text-sm font-medium leading-6 text-gray-900">
-                                        {transaction.amount}
+                                        {transaction.amount + " points"}
                                       </div>
                                       <div
                                         className={classNames(
@@ -341,20 +302,12 @@ export default function Dashboard() {
                                         {transaction.status}
                                       </div>
                                     </div>
-                                    {transaction.tax ? (
-                                      <div className="mt-1 text-xs leading-5 text-gray-500">
-                                        {transaction.tax} tax
-                                      </div>
-                                    ) : null}
                                   </div>
                                 </div>
                                 <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
                                 <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
                               </td>
                               <td className="hidden py-5 pr-6 sm:table-cell">
-                                <div className="text-sm leading-6 text-gray-900">
-                                  {transaction.client}
-                                </div>
                                 <div className="mt-1 text-xs leading-5 text-gray-500">
                                   {transaction.description}
                                 </div>
@@ -372,7 +325,6 @@ export default function Dashboard() {
                                     </span>
                                     <span className="sr-only">
                                       , invoice #{transaction.invoiceNumber},{" "}
-                                      {transaction.client}
                                     </span>
                                   </a>
                                 </div>
@@ -394,33 +346,33 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Recent client list*/}
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Recent redemption list*/}
+          {/* <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">
-                  Recent clients
+                  Recent Redemption
                 </h2>
                 <a
                   href="#"
                   className="text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                 >
-                  View all<span className="sr-only">, clients</span>
+                  View all<span className="sr-only">, redemption</span>
                 </a>
               </div>
               <ul
                 role="list"
                 className="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8"
               >
-                {clients.map((client) => (
+                {redemption.map((redemption) => (
                   <li
-                    key={client.id}
+                    key={redemption.redemption_id}
                     className="overflow-hidden rounded-xl border border-gray-200"
                   >
                     <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
                       <img
-                        src={client.image_url}
-                        alt={client.description}
+                        src={redemption.reward_id}
+                        alt="Image not found"
                         className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"
                       />
                       <div className="text-sm font-medium leading-6 text-gray-900">
@@ -455,7 +407,7 @@ export default function Dashboard() {
                                 >
                                   View
                                   <span className="sr-only">
-                                    , {client.description}
+                                    , {redemption.description}
                                   </span>
                                 </a>
                               )}
@@ -471,7 +423,7 @@ export default function Dashboard() {
                                 >
                                   Edit
                                   <span className="sr-only">
-                                    , {client.description}
+                                    , {redemption.description}
                                   </span>
                                 </a>
                               )}
@@ -483,21 +435,17 @@ export default function Dashboard() {
                     <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                       <div className="flex justify-between gap-x-4 py-3">
                         <dt className="text-gray-500">Description</dt>
-                        <dd className="text-gray-700">
-                          {client.description}
-                        </dd>
+                        <dd className="text-gray-700">{client.description}</dd>
                       </div>
                       <div className="flex justify-between gap-x-4 py-3">
                         <dt className="text-gray-500">Date</dt>
-                        <dd className="text-gray-700">
-                          {client.created_at}
-                        </dd>
+                        <dd className="text-gray-700">{client.created_at}</dd>
                       </div>
                       <div className="flex justify-between gap-x-4 py-3">
                         <dt className="text-gray-500">Points Awarded</dt>
                         <dd className="flex items-start gap-x-2">
                           <div className="font-medium text-gray-900">
-                            {client.points_awarded}
+                            {redemption.points_awarded}
                           </div>
                         </dd>
                       </div>
@@ -506,8 +454,9 @@ export default function Dashboard() {
                 ))}
               </ul>
             </div>
-          </div>
+          </div> */}
         </div>
+        <ToastContainer />
       </main>
     </>
   );

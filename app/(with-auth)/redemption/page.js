@@ -6,6 +6,8 @@ import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "../../pages/api";
 import { toast } from "react-toastify";
 import ConfirmationModal from "./confirmationModal";
+import { createClient } from "@/lib/supabase/component";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -73,6 +75,7 @@ export default function Redemption() {
   const [availableRewards, setAvailableRewards] = useState([]); // Add in rewards later
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const supabase = createClient();
 
   const toggleModal = (e) => {
     setShowModal(!showModal);
@@ -106,28 +109,23 @@ export default function Redemption() {
   };
 
   useEffect(() => {
-    async function getUser() {
-      const currentUser = await fetchCurrentUser();
-      setUser(currentUser);
-    }
-    fetch(`${apiLinks.main}/rewards`)
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the response from the server
-        console.log(data);
-        // Update the rewards state with the fetched data
+    const fetchRewards = async () => {
+      try {
+        const { data, error } = await supabase.from("reward").select("*");
+        if (error) {
+          throw new Error(error.message);
+        }
         setAvailableRewards(data);
-      })
-      .catch((error) => {
-        // Handle any errors
+        console.log(data);
+      } catch (error) {
         console.error(error);
         toast.error(
-          "An error occurred with fetching rewards. Please try again."
+          "An error occurred while fetching rewards. Please try again."
         );
-      });
-
-    getUser();
-  }, []); //Add in userid later
+      }
+    };
+    fetchRewards();
+  }, []);
 
   return (
     <>
@@ -153,13 +151,13 @@ export default function Redemption() {
           </header>
 
           <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-            {rewards.map((reward) => (
-              <div key={reward.id}>
+            {availableRewards.map((reward) => (
+              <div key={reward.reward_id}>
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
                     <img
-                      src={reward.imageSrc}
-                      alt={reward.imageAlt}
+                      src={reward.image_url}
+                      alt={"Cannot find"}
                       className="h-full w-full object-cover object-center"
                     />
                   </div>
@@ -167,7 +165,6 @@ export default function Redemption() {
                     <h3 className="text-sm font-medium text-gray-900">
                       {reward.name}
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">{reward.color}</p>
                   </div>
                   <div className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
                     <div
@@ -175,15 +172,14 @@ export default function Redemption() {
                       className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
                     />
                     <p className="relative text-lg font-semibold text-white">
-                      {reward.price}
+                      {reward.points_cost} points
                     </p>
                   </div>
                 </div>
                 <div className="mt-6">
                   <button
                     onClick={() => {
-                      setSelectedItem(reward);
-                      setShowModal(true);
+                      router.push("/login");
                     }}
                     className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 w-full"
                   >
