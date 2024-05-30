@@ -45,44 +45,10 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
-  const [clients, setClients] = useState([
-    {
-      id: 1,
-      name: "Tuple",
-      imageUrl: "https://tailwindui.com/img/logos/48x48/tuple.svg",
-      lastInvoice: {
-        date: "December 13, 2022",
-        dateTime: "2022-12-13",
-        amount: "$2,000.00",
-        status: "Overdue",
-      },
-    },
-    {
-      id: 2,
-      name: "SavvyCal",
-      imageUrl: "https://tailwindui.com/img/logos/48x48/savvycal.svg",
-      lastInvoice: {
-        date: "January 22, 2023",
-        dateTime: "2023-01-22",
-        amount: "$14,000.00",
-        status: "Paid",
-      },
-    },
-    {
-      id: 3,
-      name: "Reform",
-      imageUrl: "https://tailwindui.com/img/logos/48x48/reform.svg",
-      lastInvoice: {
-        date: "January 23, 2023",
-        dateTime: "2023-01-23",
-        amount: "$7,600.00",
-        status: "Paid",
-      },
-    },
-  ]);
   const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formDetails, setFormDetails] = useState({
+    points_awarded: 0,
     image_url: "",
     description: "",
   });
@@ -134,33 +100,29 @@ export default function Dashboard() {
     return days;
   };
 
-  const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleSubmit = async (e) => {
+    console.log(formDetails);
+    try {
+      const response = await post(
+        `${apiLinks.main}/api/recycle/` + user.id,
+        formDetails
+      );
 
-  const handleSubmit = (e) => {
-    // Make a POST request to localhost:8000/user with the form data
-    fetch(`${apiLinks.main}/user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formDetails),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        // Handle the response from the server
-        console.log(result);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error(error);
-        toast.error("An error occurred. Please try again.");
-      });
-    toggleModal();
+      if (!response.ok) {
+        throw new Error("Failed to submit");
+      }
+
+      const result = await response.json();
+      setSubmissions((prevSubmissions) => [...prevSubmissions, result.data]);
+      const groupedDays = groupSubmissionsByDay([...submissions, result.data]);
+      setGroupedDays(groupedDays);
+
+      setFormDetails({ points_awarded: 0, image_url: "", description: "" });
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+    // setShowModal(false);
   };
 
   const toggleModal = () => {
@@ -382,8 +344,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Recent client list*/}
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Recent redemption list*/}
+          {/* <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -393,22 +355,22 @@ export default function Dashboard() {
                   href="#"
                   className="text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                 >
-                  View all<span className="sr-only">, clients</span>
+                  View all<span className="sr-only">, redemption</span>
                 </a>
               </div>
               <ul
                 role="list"
                 className="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8"
               >
-                {clients.map((client) => (
+                {redemption.map((redemption) => (
                   <li
-                    key={client.id}
+                    key={redemption.redemption_id}
                     className="overflow-hidden rounded-xl border border-gray-200"
                   >
                     <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
                       <img
-                        src={client.image_url}
-                        alt={client.description}
+                        src={redemption.reward_id}
+                        alt="Image not found"
                         className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"
                       />
                       <div className="text-sm font-medium leading-6 text-gray-900">
@@ -443,7 +405,7 @@ export default function Dashboard() {
                                 >
                                   View
                                   <span className="sr-only">
-                                    , {client.description}
+                                    , {redemption.description}
                                   </span>
                                 </a>
                               )}
@@ -459,7 +421,7 @@ export default function Dashboard() {
                                 >
                                   Edit
                                   <span className="sr-only">
-                                    , {client.description}
+                                    , {redemption.description}
                                   </span>
                                 </a>
                               )}
@@ -481,7 +443,7 @@ export default function Dashboard() {
                         <dt className="text-gray-500">Points Awarded</dt>
                         <dd className="flex items-start gap-x-2">
                           <div className="font-medium text-gray-900">
-                            {client.points_awarded}
+                            {redemption.points_awarded}
                           </div>
                         </dd>
                       </div>
@@ -490,7 +452,7 @@ export default function Dashboard() {
                 ))}
               </ul>
             </div>
-          </div>
+          </div> */}
         </div>
       </main>
     </>
