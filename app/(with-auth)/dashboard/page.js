@@ -101,28 +101,33 @@ export default function Dashboard() {
   };
 
   const handleSubmit = async (e) => {
+    // e.preventDefault(); // Prevent default form submission behavior
     console.log(formDetails);
+
     try {
-      const response = await post(
-        `${apiLinks.main}/api/recycle/` + user.id,
-        formDetails
-      );
+      const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDetails),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to submit");
       }
 
       const result = await response.json();
+
       setSubmissions((prevSubmissions) => [...prevSubmissions, result.data]);
       const groupedDays = groupSubmissionsByDay([...submissions, result.data]);
       setGroupedDays(groupedDays);
 
-      setFormDetails({ points_awarded: 0, image_url: "", description: "" });
+      setFormDetails({ image_url: "", description: "" });
       setShowModal(false);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
-    // setShowModal(false);
   };
 
   const toggleModal = () => {
