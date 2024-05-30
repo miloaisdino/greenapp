@@ -34,64 +34,10 @@ const stats = [
   },
 ];
 const statuses = {
-  Paid: "text-green-700 bg-green-50 ring-green-600/20",
-  Withdraw: "text-gray-600 bg-gray-50 ring-gray-500/10",
-  Overdue: "text-red-700 bg-red-50 ring-red-600/10",
+  Successful: "text-green-700 bg-green-50 ring-green-600/20",
+  Pending: "text-gray-600 bg-gray-50 ring-gray-500/10",
+  Failed: "text-red-700 bg-red-50 ring-red-600/10",
 };
-let days = [
-  {
-    date: "Today",
-    dateTime: "2023-03-22",
-    transactions: [
-      {
-        submission_id: 1,
-        invoiceNumber: "00001",
-        amount: "30000",
-        href: "#", //add in link to submission
-        points_awarded: "$7,600.00 USD",
-        status: "Submitted",
-        description: "Redeemed 1 tote bag",
-        icon: ArrowUpCircleIcon,
-      },
-      {
-        submission_id: 2,
-        invoiceNumber: "00002",
-        amount: "5000",
-        href: "#", //add in link to submission
-        points_awarded: "$7,600.00 USD",
-        status: "Submitted",
-        description: "Redeemed 2 Starbucks Voucher",
-        icon: ArrowUpCircleIcon,
-      },
-      {
-        submission_id: 3,
-        invoiceNumber: "00003",
-        amount: "25000",
-        href: "#", //add in link to submission
-        points_awarded: "$7,600.00 USD",
-        status: "Submitted",
-        description: "Redeemed 1 running shoe",
-        icon: ArrowUpCircleIcon,
-      },
-    ],
-  },
-  {
-    date: "Yesterday",
-    dateTime: "2023-03-21",
-    transactions: [
-      {
-        id: 4,
-        invoiceNumber: "00010",
-        href: "#",
-        amount: "50000",
-        status: "Paid",
-        // client: "SavvyCal",
-        description: "Redeemed 4 S/U credit",
-        icon: ArrowUpCircleIcon,
-      },
-    ],
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -140,6 +86,7 @@ export default function Dashboard() {
     image_url: "",
     description: "",
   });
+  const [groupedDays, setGroupedDays] = useState([]);
 
   const groupSubmissionsByDay = (submissions) => {
     const grouped = {};
@@ -152,25 +99,37 @@ export default function Dashboard() {
       grouped[date].push(submission);
     });
 
-    const days = Object.keys(grouped).map((date) => {
-      const isToday = date === new Date().toISOString().split("T")[0];
-      const isYesterday =
-        date === new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    const days = Object.keys(grouped)
+      .map((date) => {
+        const isToday = date === new Date().toISOString().split("T")[0];
+        const isYesterday =
+          date === new Date(Date.now() - 86400000).toISOString().split("T")[0];
 
-      return {
-        date: isToday ? "Today" : isYesterday ? "Yesterday" : date,
-        dateTime: date,
-        transactions: grouped[date].map((submission, index) => ({
-          id: submission.submission_id,
-          invoiceNumber: index + 1,
-          amount: submission.points_awarded,
-          href: "#",
-          status: submission.status == 0 ? "Pending" : "Successful",
-          description: submission.description,
-          icon: ArrowUpCircleIcon,
-        })),
-      };
-    });
+        return {
+          date: isToday ? "Today" : isYesterday ? "Yesterday" : "Others",
+          dateTime: date,
+          transactions: grouped[date].map((submission, index) => ({
+            id: submission.submission_id,
+            invoiceNumber: index + 1,
+            amount: submission.points_awarded,
+            href: "#",
+            status:
+              submission.status == 0
+                ? "Pending"
+                : submission.status == 1
+                ? "Successful"
+                : "Failed",
+            description: submission.description,
+            icon: ArrowUpCircleIcon,
+          })),
+        };
+      })
+      .sort((a, b) => {
+        // Sort by date
+        if (a.date === "Others") return 1;
+        if (b.date === "Others") return -1;
+        return 0;
+      });
     return days;
   };
 
@@ -223,8 +182,8 @@ export default function Dashboard() {
         const submissions = await response.json();
         setSubmissions(submissions.data);
         console.log(submissions);
-        days = groupSubmissionsByDay(submissions.data);
-        console.log(days);
+        const groupedDays = groupSubmissionsByDay(submissions.data);
+        setGroupedDays(groupedDays);
       } catch (error) {
         console.error("Error fetching submissions:", error);
       }
@@ -337,7 +296,7 @@ export default function Dashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {days.map((day) => (
+                      {groupedDays.map((day) => (
                         <Fragment key={day.dateTime}>
                           <tr className="text-sm leading-6 text-gray-900">
                             <th
@@ -361,7 +320,7 @@ export default function Dashboard() {
                                   <div className="flex-auto">
                                     <div className="flex items-start gap-x-3">
                                       <div className="text-sm font-medium leading-6 text-gray-900">
-                                        {transaction.amount}
+                                        {transaction.amount + " points"}
                                       </div>
                                       <div
                                         className={classNames(
