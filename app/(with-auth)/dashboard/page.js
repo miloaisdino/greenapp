@@ -87,6 +87,7 @@ export default function Dashboard() {
     description: "",
   });
   const [groupedDays, setGroupedDays] = useState([]);
+  const [redemption, setRedemption] = useState([]);
 
   const groupSubmissionsByDay = (submissions) => {
     const grouped = {};
@@ -181,9 +182,15 @@ export default function Dashboard() {
         const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
         const submissions = await response.json();
         setSubmissions(submissions.data);
-        console.log(submissions);
         const groupedDays = groupSubmissionsByDay(submissions.data);
         setGroupedDays(groupedDays);
+
+        const redemptionResponse = await fetch(
+          `${apiLinks.main}/api/redemption/` + user.id
+        );
+        const redemption = await redemptionResponse.json();
+        setRedemption(redemption.data);
+        console.log(redemption.data);
       } catch (error) {
         console.error("Error fetching submissions:", error);
       }
