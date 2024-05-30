@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Fragment, useEffect, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   ArrowDownCircleIcon,
   ArrowPathIcon,
@@ -12,8 +11,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "@/app/pages/api";
-import { MenuButton, MenuItems } from "@headlessui/react";
 import SubmissionModal from "./submissionModal";
+import { ToastContainer, toast } from "react-toastify";
 
 const stats = [
   {
@@ -51,14 +50,16 @@ export default function Dashboard() {
     points_awarded: 0,
     image_url: "",
     description: "",
+    user_id: "",
+    status: 0,
   });
   const [groupedDays, setGroupedDays] = useState([]);
-  const [redemption, setRedemption] = useState([]);
+  // const [redemption, setRedemption] = useState([]);
 
   const groupSubmissionsByDay = (submissions) => {
     const grouped = {};
-
-    submissions.forEach((submission) => {
+    submissions.forEach((submission, index) => {
+      submission.index = index + 1;
       const date = submission.submission_date.split("T")[0];
       if (!grouped[date]) {
         grouped[date] = [];
@@ -75,9 +76,9 @@ export default function Dashboard() {
         return {
           date: isToday ? "Today" : isYesterday ? "Yesterday" : "Others",
           dateTime: date,
-          transactions: grouped[date].map((submission, index) => ({
+          transactions: grouped[date].map((submission) => ({
             id: submission.submission_id,
-            invoiceNumber: index + 1,
+            invoiceNumber: submission.index,
             amount: submission.points_awarded,
             href: "#",
             status:
@@ -101,9 +102,6 @@ export default function Dashboard() {
   };
 
   const handleSubmit = async (e) => {
-    // e.preventDefault(); // Prevent default form submission behavior
-    console.log(formDetails);
-
     try {
       const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id, {
         method: "POST",
@@ -119,19 +117,19 @@ export default function Dashboard() {
 
       const result = await response.json();
 
-      setSubmissions((prevSubmissions) => [...prevSubmissions, result.data]);
-      const groupedDays = groupSubmissionsByDay([...submissions, result.data]);
+      setSubmissions((prevSubmissions) => [...prevSubmissions, result.data[0]]);
+      const groupedDays = groupSubmissionsByDay(submissions);
       setGroupedDays(groupedDays);
-
       setFormDetails({ image_url: "", description: "" });
-      setShowModal(false);
+      // setShowModal(false);
+      toast.success("Submission successful");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+    setShowModal(false);
   };
 
   const toggleModal = () => {
-    console.log("toggling modal" + showModal);
     setShowModal(!showModal);
   };
 
@@ -140,24 +138,23 @@ export default function Dashboard() {
       const currentUser = await fetchCurrentUser();
       if (user === null) {
         setUser(currentUser);
+        setFormDetails({ ...formDetails, user_id: currentUser.id });
       }
       return currentUser;
     }
     const getSubmissions = async (user) => {
       try {
-        console.log(user);
         const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
         const submissions = await response.json();
         setSubmissions(submissions.data);
         const groupedDays = groupSubmissionsByDay(submissions.data);
         setGroupedDays(groupedDays);
 
-        const redemptionResponse = await fetch(
-          `${apiLinks.main}/api/redemption/` + user.id
-        );
-        const redemption = await redemptionResponse.json();
-        setRedemption(redemption.data);
-        console.log(redemption.data);
+        // const redemptionResponse = await fetch(
+        //   `${apiLinks.main}/api/redemption/` + user.id
+        // );
+        // const redemption = await redemptionResponse.json();
+        // setRedemption(redemption.data);
       } catch (error) {
         console.error("Error fetching submissions:", error);
       }
@@ -459,6 +456,7 @@ export default function Dashboard() {
             </div>
           </div> */}
         </div>
+        <ToastContainer />
       </main>
     </>
   );
