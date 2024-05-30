@@ -14,7 +14,6 @@ import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "@/app/pages/api";
 import { MenuButton, MenuItems } from "@headlessui/react";
 import SubmissionModal from "./submissionModal";
-import { createClient } from "@/lib/supabase/component";
 
 const stats = [
   {
@@ -39,7 +38,7 @@ const statuses = {
   Withdraw: "text-gray-600 bg-gray-50 ring-gray-500/10",
   Overdue: "text-red-700 bg-red-50 ring-red-600/10",
 };
-const days = [
+let days = [
   {
     date: "Today",
     dateTime: "2023-03-22",
@@ -135,13 +134,45 @@ export default function Dashboard() {
       },
     },
   ]);
+  const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formDetails, setFormDetails] = useState({
     image_url: "",
     description: "",
   });
-  const supabase = createClient();
-  
+
+  const groupSubmissionsByDay = (submissions) => {
+    const grouped = {};
+
+    submissions.forEach((submission) => {
+      const date = submission.submission_date.split("T")[0];
+      if (!grouped[date]) {
+        grouped[date] = [];
+      }
+      grouped[date].push(submission);
+    });
+
+    const days = Object.keys(grouped).map((date) => {
+      const isToday = date === new Date().toISOString().split("T")[0];
+      const isYesterday =
+        date === new Date(Date.now() - 86400000).toISOString().split("T")[0];
+
+      return {
+        date: isToday ? "Today" : isYesterday ? "Yesterday" : date,
+        dateTime: date,
+        transactions: grouped[date].map((submission, index) => ({
+          id: submission.submission_id,
+          invoiceNumber: index + 1,
+          amount: submission.points_awarded,
+          href: "#",
+          status: submission.status == 0 ? "Pending" : "Successful",
+          description: submission.description,
+          icon: ArrowUpCircleIcon,
+        })),
+      };
+    });
+    return days;
+  };
 
   const handleInputChange = (e) => {
     setFormValues({
@@ -188,12 +219,12 @@ export default function Dashboard() {
     const getSubmissions = async (user) => {
       try {
         console.log(user);
-        const response = await fetch(
-          `${apiLinks.main}/api/recycle/` + user.id
-        );
+        const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
         const submissions = await response.json();
+        setSubmissions(submissions.data);
         console.log(submissions);
-        setClients(submissions.data);
+        days = groupSubmissionsByDay(submissions.data);
+        console.log(days);
       } catch (error) {
         console.error("Error fetching submissions:", error);
       }
@@ -341,20 +372,12 @@ export default function Dashboard() {
                                         {transaction.status}
                                       </div>
                                     </div>
-                                    {transaction.tax ? (
-                                      <div className="mt-1 text-xs leading-5 text-gray-500">
-                                        {transaction.tax} tax
-                                      </div>
-                                    ) : null}
                                   </div>
                                 </div>
                                 <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
                                 <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
                               </td>
                               <td className="hidden py-5 pr-6 sm:table-cell">
-                                <div className="text-sm leading-6 text-gray-900">
-                                  {transaction.client}
-                                </div>
                                 <div className="mt-1 text-xs leading-5 text-gray-500">
                                   {transaction.description}
                                 </div>
@@ -372,7 +395,6 @@ export default function Dashboard() {
                                     </span>
                                     <span className="sr-only">
                                       , invoice #{transaction.invoiceNumber},{" "}
-                                      {transaction.client}
                                     </span>
                                   </a>
                                 </div>
@@ -399,7 +421,7 @@ export default function Dashboard() {
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">
-                  Recent clients
+                  Recent Redemption
                 </h2>
                 <a
                   href="#"
@@ -483,15 +505,11 @@ export default function Dashboard() {
                     <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                       <div className="flex justify-between gap-x-4 py-3">
                         <dt className="text-gray-500">Description</dt>
-                        <dd className="text-gray-700">
-                          {client.description}
-                        </dd>
+                        <dd className="text-gray-700">{client.description}</dd>
                       </div>
                       <div className="flex justify-between gap-x-4 py-3">
                         <dt className="text-gray-500">Date</dt>
-                        <dd className="text-gray-700">
-                          {client.created_at}
-                        </dd>
+                        <dd className="text-gray-700">{client.created_at}</dd>
                       </div>
                       <div className="flex justify-between gap-x-4 py-3">
                         <dt className="text-gray-500">Points Awarded</dt>
