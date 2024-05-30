@@ -6,10 +6,6 @@ import { useRouter } from "next/navigation";
 import MainFooter from "../component/mainFooter";
 import { createClient } from "@/lib/supabase/component";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function Rewards() {
   const [availableRewards, setAvailableRewards] = useState([]);
   const router = useRouter();
@@ -48,8 +44,8 @@ export default function Rewards() {
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
                     <img
-                      src={reward.image_url}
-                      alt={"Cannot find"}
+                      src={reward.image_url || "placeholderImage.svg"}
+                      alt={reward.name || "Image not available"}
                       className="h-full w-full object-cover object-center"
                     />
                   </div>

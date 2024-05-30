@@ -156,7 +156,7 @@ export default function Redemption() {
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
                     <img
-                      src={reward.image_url}
+                      src={reward.image_url || "placeholderImage.svg"}
                       alt={"Cannot find"}
                       className="h-full w-full object-cover object-center"
                     />
