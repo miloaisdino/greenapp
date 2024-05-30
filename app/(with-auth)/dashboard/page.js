@@ -13,6 +13,7 @@ import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "@/app/pages/api";
 import SubmissionModal from "./submissionModal";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const stats = [
   {
