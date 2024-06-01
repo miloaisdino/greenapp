@@ -58,7 +58,8 @@ export default function SubmissionModal({
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      Please input details of your submission
+                      Please take a picture of your recycling item for
+                      verification
                     </Dialog.Title>
 
                     <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
