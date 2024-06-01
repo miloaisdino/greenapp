@@ -66,7 +66,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0 lg:flex-grow">
-              <svg
+              {/* <svg
                 viewBox="0 0 366 729"
                 role="img"
                 className="mx-auto w-[22.875rem] max-w-full drop-shadow-xl"
@@ -96,7 +96,7 @@ export default function LandingPage() {
                     alt=""
                   />
                 </foreignObject>
-              </svg>
+              </svg> */}
             </div>
           </div>
         </div>
