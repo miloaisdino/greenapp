@@ -5,6 +5,7 @@ import MainHeader from "../component/mainHeader";
 import { useRouter } from "next/navigation";
 import MainFooter from "../component/mainFooter";
 import { createClient } from "@/lib/supabase/component";
+import { CldImage } from "next-cloudinary";
 
 export default function Rewards() {
   const [availableRewards, setAvailableRewards] = useState([]);
@@ -37,16 +38,16 @@ export default function Rewards() {
           <header className="text-xl font-bold text-gray-900 flex justify-between items-center mt-8">
             <div>Available Rewards</div>
           </header>
-
           <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
             {availableRewards.map((reward) => (
               <div key={reward.reward_id}>
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                    <img
-                      src={reward.image_url || "placeholderImage.svg"}
-                      alt={reward.name || "Image not available"}
-                      className="h-full w-full object-cover object-center"
+                    <CldImage
+                      src={reward.image_url}
+                      alt={reward.name || "Reward not available"}
+                      fill
+                      loading="lazy"
                     />
                   </div>
                   <div className="relative mt-4">
