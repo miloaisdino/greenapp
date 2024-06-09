@@ -1,14 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Fragment, useEffect, useState } from "react";
-import {
-  ArrowDownCircleIcon,
-  ArrowPathIcon,
-  ArrowUpCircleIcon,
-  Bars3Icon,
-  EllipsisHorizontalIcon,
-  PlusSmallIcon,
-} from "@heroicons/react/20/solid";
+import { ArrowUpCircleIcon, PlusSmallIcon } from "@heroicons/react/20/solid";
 import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "@/app/pages/api";
 import SubmissionModal from "./submissionModal";
@@ -113,6 +106,7 @@ export default function Dashboard() {
       });
 
       if (!response.ok) {
+        console.log(formDetails);
         throw new Error("Failed to submit");
       }
 
@@ -121,7 +115,12 @@ export default function Dashboard() {
       setSubmissions((prevSubmissions) => [...prevSubmissions, result.data[0]]);
       const groupedDays = groupSubmissionsByDay(submissions);
       setGroupedDays(groupedDays);
-      setFormDetails({ image_url: "", description: "" });
+      setFormDetails((prevFormDetails) => ({
+        ...prevFormDetails,
+        image_url: "",
+        description: "",
+      }));
+
       // setShowModal(false);
       toast.success("Submission successful");
     } catch (error) {
