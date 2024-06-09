@@ -48,6 +48,7 @@ export default function Rewards() {
                       alt={reward.name || "Reward not available"}
                       fill
                       loading="lazy"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 33vw"
                     />
                   </div>
                   <div className="relative mt-4">

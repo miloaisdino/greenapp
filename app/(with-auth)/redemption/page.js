@@ -7,6 +7,7 @@ import apiLinks from "../../pages/api";
 import { toast } from "react-toastify";
 import ConfirmationModal from "./confirmationModal";
 import { createClient } from "@/lib/supabase/component";
+import { CldImage } from "next-cloudinary";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -155,10 +156,12 @@ export default function Redemption() {
               <div key={reward.reward_id}>
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                    <img
-                      src={reward.image_url || "placeholderImage.svg"}
-                      alt={"Cannot find"}
-                      className="h-full w-full object-cover object-center"
+                    <CldImage
+                      src={reward.image_url}
+                      alt={reward.name || "Reward not available"}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 33vw"
                     />
                   </div>
                   <div className="relative mt-4">
