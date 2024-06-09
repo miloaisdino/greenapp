@@ -1,6 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { CldUploadWidget } from "next-cloudinary";
 
 export default function SubmissionModal({
   handleSubmit,
@@ -10,8 +11,12 @@ export default function SubmissionModal({
   setFormDetails,
 }) {
   const cancelButtonRef = useRef(null);
-  const handleFileUpload = (e) => {
-    console.log(e.target.files[0]);
+  const handleUpload = (result, options) => {
+    const imageUrl = result.info.secure_url;
+    setFormDetails((prevDetails) => ({
+      ...prevDetails,
+      image_url: imageUrl,
+    }));
   };
 
   return (
@@ -73,20 +78,20 @@ export default function SubmissionModal({
                             htmlFor="file-upload"
                             className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                           >
-                            <span>Upload a file</span>
-                            <input
-                              id="file-upload"
-                              name="file-upload"
-                              type="file"
-                              className="sr-only"
-                              onChange={(e) => handleFileUpload(e)}
-                            />
+                            <CldUploadWidget
+                              uploadPreset="SubmissionsUploadPreset"
+                              onSuccess={handleUpload}
+                            >
+                              {({ open }) => {
+                                return (
+                                  <button onClick={() => open()}>
+                                    Upload an Image
+                                  </button>
+                                );
+                              }}
+                            </CldUploadWidget>
                           </label>
-                          <p className="pl-1">or drag and drop</p>
                         </div>
-                        <p className="text-xs leading-5 text-gray-600">
-                          PNG, JPG, GIF up to 10MB
-                        </p>
                       </div>
                     </div>
                     <label
