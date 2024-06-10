@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import apiLinks from "@/app/pages/api";
 import { createClient } from "@/lib/supabase/component";
 import { useRouter } from "next/navigation";
