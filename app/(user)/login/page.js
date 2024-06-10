@@ -11,6 +11,11 @@ import GreenAppIcon from "@/public/greenAppIcon.svg";
 /* eslint-disable @next/next/no-img-element */
 
 export default function Login() {
+  //check if correct domain
+  if(!window.location.href.includes(apiLinks.main)){
+    window.location.replace(apiLinks.main+"/login")
+  }
+
   const supabase = createClient();
   const router = useRouter();
   const [formDetails, setFormDetails] = useState({
