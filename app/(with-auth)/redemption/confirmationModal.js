@@ -9,6 +9,7 @@ export default function ConfirmationModal({
   toggleModal,
   content,
   data,
+  user,
 }) {
   const cancelButtonRef = useRef(null);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
@@ -76,18 +77,18 @@ export default function ConfirmationModal({
                         className="mt-3.5 space-y-4 rounded-lg border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
                       <div className="space-y-2">
                         <dl className="flex items-center justify-between gap-4">
-                          <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Earned Points</dt>
-                          <dd className="text-base font-medium text-gray-900 dark:text-white">0</dd>
+                          <dt className="text-base text-gray-500 dark:text-white">Earned Points</dt>
+                          <dd className="text-base font-medium text-gray-900 dark:text-white">{user.balances.current_points}</dd>
                         </dl>
 
                         <dl className="flex items-center justify-between gap-4">
-                          <dt className="text-base font-normal text-gray-500 dark:text-gray-400">1 × {data.name}</dt>
-                          <dd className="text-base font-medium text-green-500">- {data.price}</dd>
+                          <dt className="text-base text-gray-500 dark:text-white">1 × {data.name}</dt>
+                          <dd className="text-base font-medium text-gray-900 dark:text-white">- {data.price}</dd>
                         </dl>
 
                         <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-1 dark:border-gray-700">
                           <dt className="text-base text-gray-500 dark:text-white">Remaining Points</dt>
-                          <dd className="text-base font-medium text-gray-900 dark:text-white">0</dd>
+                          <dd className="text-base font-medium text-green-500">{user.balances.current_points - data.price}</dd>
                         </dl>
                       </div>
                     </div>
