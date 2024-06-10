@@ -95,10 +95,17 @@ export default function Redemption() {
       .then((result) => {
         // Handle the response from the server
         //console.log(result);
-        toast.success(<div>Redemption successful! <br />Check your email for details</div>);
+        if (result.error){
+          toast.error(result.error);
+        } else {
+          toast.success(
+              <div>Redemption successful!
+                <br />You will receive an email within <b>24 hours</b> with details</div>
+          );
+        }
       })
       .catch((error) => {
-        // Handle any errors
+        // Handle any fetch errors
         console.error(error);
         toast.error("An error occurred. Please try again.");
       });

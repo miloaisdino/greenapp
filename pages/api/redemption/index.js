@@ -11,17 +11,29 @@ export default async function handler(req, res) {
     const user_id = user.data.user.id;
 
     if (req.method === 'POST') {
+        //get reward details
         const {data: reward_data} = await sclient
             .from('reward')
             .select('reward_id, points_cost, available_quantity')
             .eq('reward_id', body.reward_id);
         const reward = reward_data[0];
-        if (reward.reward_id !== body.reward_id) res.status(500);
+        if (reward.reward_id !== body.reward_id) res.status(500).json({error: "Reward no longer exists"});
+
+        //get account balance
+        const {data: acc_data} = await sclient
+            .from('balances')
+            .select('*')
+            .eq('id', user_id);
+        const acc = acc_data[0];
+        if (acc?.id !== user_id || acc.current_points < reward.points_cost)
+            res.status(500).json({error: "Insufficient funds"});
+
+        //create redemption entry
         const row = {
             'user_id': user_id,
             'reward_id': reward.reward_id,
             'debit': reward.points_cost,
-            'status': 1,
+            'status': 0, //not yet claimed or emailed to user
             'quantity': 1,
         }
         const { data, error } = await sclient
@@ -29,8 +41,16 @@ export default async function handler(req, res) {
             .insert([row])
             .select();
 
-        if (error) {
-            res.status(500).json({ error: error.message });
+        //deduct balance
+        acc.current_points -= reward.points_cost;
+        const { error: error2 } = await sclient
+            .from("balances")
+            .update([acc])
+            .select()
+            .eq("id", user_id);
+
+        if (error || error2) {
+            res.status(500).json({ error: error?.message || error2?.message });
             return;
         }
 
