@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "../../pages/api";
-import { toast } from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ConfirmationModal from "./confirmationModal";
 import { createClient } from "@/lib/supabase/component";
 
@@ -93,7 +94,8 @@ export default function Redemption() {
       .then((response) => response.json())
       .then((result) => {
         // Handle the response from the server
-        console.log(result);
+        //console.log(result);
+        toast.success(<div>Redemption successful! <br />Check your email for details</div>);
       })
       .catch((error) => {
         // Handle any errors

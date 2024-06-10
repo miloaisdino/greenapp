@@ -3,6 +3,8 @@ import Header from "../component/header";
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default async function withAuthLayout({children}) {
     const supabase = createClient()
@@ -14,6 +16,7 @@ export default async function withAuthLayout({children}) {
             <div>
                 <Header auth={data} redirect={redirect} />
                 {children}
+                <ToastContainer />
             </div>
         );
     }
