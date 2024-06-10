@@ -73,7 +73,7 @@ export default function Redemption() {
     // More products...
   ];
   const [availableRewards, setAvailableRewards] = useState([]); // Add in rewards later
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState({});
   const [showModal, setShowModal] = useState(false);
   const supabase = createClient();
 
@@ -83,12 +83,12 @@ export default function Redemption() {
 
   const handleConfirmSubmit = () => {
     // Make a POST request to localhost:8000/user with the form data
-    fetch(`http://${apiLinks.main}/user`, {
+    fetch(`${apiLinks.main}/api/redemption`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(shoppingCart),
+      body: JSON.stringify({'reward_id': selectedItem.reward_id}),
     })
       .then((response) => response.json())
       .then((result) => {
@@ -137,12 +137,13 @@ export default function Redemption() {
             handleCancelSubmit={handleCancelSubmit}
             toggleModal={toggleModal}
             content={
-              "Confirm purchase of " +
+              "Confirm redemption of " +
               selectedItem.name +
               " for " +
               selectedItem.price +
-              "?"
+              " points?"
             }
+            data={selectedItem}
           />
         )}
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -179,11 +180,12 @@ export default function Redemption() {
                 <div className="mt-6">
                   <button
                     onClick={() => {
-                      router.push("/login");
+                      setSelectedItem({ 'reward_id': reward.reward_id, 'name': reward.name, 'price': reward.points_cost });
+                      toggleModal();
                     }}
                     className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 w-full"
                   >
-                    Redeem<span className="sr-only">, {reward.name}</span>
+                    Redeem
                   </button>
                 </div>
               </div>

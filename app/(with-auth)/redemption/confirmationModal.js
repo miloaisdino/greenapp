@@ -8,6 +8,7 @@ export default function ConfirmationModal({
   handleCancelSubmit,
   toggleModal,
   content,
+  data,
 }) {
   const cancelButtonRef = useRef(null);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
@@ -51,49 +52,70 @@ export default function ConfirmationModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-4/12 sm:max-w-lg sm:p-6">
                 <div>
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                    <CheckIcon
-                      className="h-6 w-6 text-green-600"
-                      aria-hidden="true"
-                    />
+                  <div className="mt-0.5 mb-3 flex">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                      <CheckIcon
+                          className="h-6 w-6 text-green-600"
+                          aria-hidden="true"
+                      />
+                    </div>
+                    <div className="flex h-12 w-auto ml-2.5 items-center justify-center">
+                      <Dialog.Title
+                          as="h3"
+                          className="text-base font-semibold leading-6 text-gray-900"
+                      >
+                        Order Confirmation
+                      </Dialog.Title>
+                    </div>
                   </div>
-                  <div className="mt-3 text-center sm:mt-5">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-base font-semibold leading-6 text-gray-900"
-                    >
-                      Please confirm the following details before proceeding
-                    </Dialog.Title>
-                    <Dialog.Description className="mt-2 text-sm text-gray-500">
-                      {content}
-                    </Dialog.Description>
-                  </div>
+                  <Dialog.Description className="mt-3 text-sm text-gray-500">
+                    {content}
+                    <div
+                        className="mt-3.5 space-y-4 rounded-lg border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+                      <div className="space-y-2">
+                        <dl className="flex items-center justify-between gap-4">
+                          <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Earned Points</dt>
+                          <dd className="text-base font-medium text-gray-900 dark:text-white">0</dd>
+                        </dl>
+
+                        <dl className="flex items-center justify-between gap-4">
+                          <dt className="text-base font-normal text-gray-500 dark:text-gray-400">1 × {data.name}</dt>
+                          <dd className="text-base font-medium text-green-500">- {data.price}</dd>
+                        </dl>
+
+                        <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-1 dark:border-gray-700">
+                          <dt className="text-base text-gray-500 dark:text-white">Remaining Points</dt>
+                          <dd className="text-base font-medium text-gray-900 dark:text-white">0</dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </Dialog.Description>
                 </div>
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   {purchaseSuccess ? (
-                    <div className="text-center text-green-600 font-semibold">
+                      <div className="text-center text-green-600 font-semibold">
                       Purchase successful!
-                    </div>
+                      </div>
                   ) : (
-                    <>
-                      <button
-                        type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                        onClick={handleConfirm}
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        type="button"
-                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-                        onClick={handleCancelSubmit}
-                        ref={cancelButtonRef}
-                      >
-                        Cancel
-                      </button>
-                    </>
+                      <>
+                        <button
+                            type="button"
+                            className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                            onClick={handleConfirm}
+                        >
+                          Confirm
+                        </button>
+                        <button
+                            type="button"
+                            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                            onClick={handleCancelSubmit}
+                            ref={cancelButtonRef}
+                        >
+                          Cancel
+                        </button>
+                      </>
                   )}
                 </div>
               </div>
