@@ -75,8 +75,10 @@ export default function Redemption() {
   ];
   const [availableRewards, setAvailableRewards] = useState([]); // Add in rewards later
   const [selectedItem, setSelectedItem] = useState({});
+  const [userData, setUserData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const supabase = createClient();
+
 
   const toggleModal = (e) => {
     setShowModal(!showModal);
@@ -133,6 +135,18 @@ export default function Redemption() {
         );
       }
     };
+    const fetchUser = async () => {
+      try {
+        const data = await fetchCurrentUser();
+        setUserData(data);
+      } catch (error) {
+        console.error(error);
+        toast.error(
+            "An error occurred while fetching user data."
+        );
+      }
+    };
+    fetchUser();
     fetchRewards();
   }, []);
 
@@ -153,6 +167,7 @@ export default function Redemption() {
               " points?"
             }
             data={selectedItem}
+            user={userData}
           />
         )}
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
