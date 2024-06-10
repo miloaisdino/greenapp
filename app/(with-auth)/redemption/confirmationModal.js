@@ -77,7 +77,7 @@ export default function ConfirmationModal({
                         className="mt-3.5 space-y-4 rounded-lg border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
                       <div className="space-y-2">
                         <dl className="flex items-center justify-between gap-4">
-                          <dt className="text-base text-gray-500 dark:text-white">Earned Points</dt>
+                          <dt className="text-base text-gray-500 dark:text-white">Current Points</dt>
                           <dd className="text-base font-medium text-gray-900 dark:text-white">{user.balances.current_points}</dd>
                         </dl>
 

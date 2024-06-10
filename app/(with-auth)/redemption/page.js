@@ -45,6 +45,8 @@ export default function Redemption() {
               <div>Redemption successful!
                 <br />You will receive an email within <b>24 hours</b> with details</div>
           );
+          //update client side balances
+          fetchUser();
         }
       })
       .catch((error) => {
@@ -60,6 +62,18 @@ export default function Redemption() {
     setShowModal(false);
   };
 
+  const fetchUser = async () => {
+    try {
+      const data = await fetchCurrentUser();
+      setUserData(data);
+    } catch (error) {
+      console.error(error);
+      toast.error(
+          "An error occurred while fetching user data."
+      );
+    }
+  };
+
   useEffect(() => {
     const fetchRewards = async () => {
       try {
@@ -73,17 +87,6 @@ export default function Redemption() {
         console.error(error);
         toast.error(
           "An error occurred while fetching rewards. Please try again."
-        );
-      }
-    };
-    const fetchUser = async () => {
-      try {
-        const data = await fetchCurrentUser();
-        setUserData(data);
-      } catch (error) {
-        console.error(error);
-        toast.error(
-            "An error occurred while fetching user data."
         );
       }
     };
@@ -112,48 +115,57 @@ export default function Redemption() {
           />
         )}
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <header className="text-xl font-bold text-gray-900 flex justify-between items-center">
-            <div>Available Rewards</div>
+          <header className="flex justify-between items-center">
+            <div className="text-xl font-bold text-gray-900">Available Rewards</div>
+            <div className="float-right pb-1 text-base text-gray-500">Current Points: {userData.balances?.current_points}</div>
           </header>
 
           <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
             {availableRewards.map((reward) => (
-              <div key={reward.reward_id}>
-                <div className="relative">
-                  <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                    <img
-                      src={reward.image_url || "placeholderImage.svg"}
-                      alt={"Cannot find"}
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </div>
-                  <div className="relative mt-4">
-                    <h3 className="text-sm font-medium text-gray-900">
-                      {reward.name}
-                    </h3>
-                  </div>
-                  <div className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
+                <div key={reward.reward_id}>
+                  <div className="relative">
+                    <div className="relative h-72 w-full overflow-hidden rounded-lg">
+                      <img
+                          src={reward.image_url || "placeholderImage.svg"}
+                          alt={"Cannot find"}
+                          className="h-full w-full object-cover object-center"
+                      />
+                    </div>
+                    <div className="relative mt-4">
+                      <h3 className="text-sm font-medium text-gray-900">
+                        {reward.name}
+                      </h3>
+                    </div>
                     <div
-                      aria-hidden="true"
-                      className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
-                    />
-                    <p className="relative text-lg font-semibold text-white">
-                      {reward.points_cost} points
-                    </p>
+                        className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
+                      <div
+                          aria-hidden="true"
+                          className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
+                      />
+                      <p className="relative text-lg font-semibold text-white">
+                        {reward.points_cost} points
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-6">
+                    <button
+                        onClick={() => {
+                          setSelectedItem({
+                            'reward_id': reward.reward_id,
+                            'name': reward.name,
+                            'price': reward.points_cost
+                          });
+                          toggleModal();
+                        }}
+                        className="relative flex items-center justify-center rounded-md border
+                        border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900
+                        hover:bg-gray-200 w-full disabled:cursor-not-allowed disabled:hover:bg-gray-100"
+                        disabled={userData.balances?.current_points < reward.points_cost}
+                    >
+                      {userData.balances?.current_points < reward.points_cost ? "Insufficient Points" : "Redeem"}
+                    </button>
                   </div>
                 </div>
-                <div className="mt-6">
-                  <button
-                    onClick={() => {
-                      setSelectedItem({ 'reward_id': reward.reward_id, 'name': reward.name, 'price': reward.points_cost });
-                      toggleModal();
-                    }}
-                    className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 w-full"
-                  >
-                    Redeem
-                  </button>
-                </div>
-              </div>
             ))}
           </div>
         </div>
