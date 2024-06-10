@@ -15,22 +15,10 @@ import SubmissionModal from "./submissionModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const stats = [
+const initialStats = [
   {
-    name: "Lifetime Points",
-    value: "925000",
-  },
-  {
-    name: "Current Points",
-    value: "175000",
-  },
-  {
-    name: "Highest Ranking",
-    value: "#2",
-  },
-  {
-    name: "Current Ranking",
-    value: "#4",
+    name: "",
+    value: "",
   },
 ];
 const statuses = {
@@ -45,6 +33,7 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
+  const [stats, setStats] = useState(initialStats);
   const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formDetails, setFormDetails] = useState({
@@ -124,6 +113,7 @@ export default function Dashboard() {
       setFormDetails({ image_url: "", description: "" });
       // setShowModal(false);
       toast.success("Submission successful");
+      getSubmissions(user);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -132,6 +122,24 @@ export default function Dashboard() {
 
   const toggleModal = () => {
     setShowModal(!showModal);
+  };
+
+  const getSubmissions = async (user) => {
+    try {
+      const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
+      const submissions = await response.json();
+      setSubmissions(submissions.data);
+      const groupedDays = groupSubmissionsByDay(submissions.data);
+      setGroupedDays(groupedDays);
+
+      // const redemptionResponse = await fetch(
+      //   `${apiLinks.main}/api/redemption/` + user.id
+      // );
+      // const redemption = await redemptionResponse.json();
+      // setRedemption(redemption.data);
+    } catch (error) {
+      console.error("Error fetching submissions:", error);
+    }
   };
 
   useEffect(() => {
@@ -143,24 +151,18 @@ export default function Dashboard() {
       }
       return currentUser;
     }
-    const getSubmissions = async (user) => {
-      try {
-        const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
-        const submissions = await response.json();
-        setSubmissions(submissions.data);
-        const groupedDays = groupSubmissionsByDay(submissions.data);
-        setGroupedDays(groupedDays);
-
-        // const redemptionResponse = await fetch(
-        //   `${apiLinks.main}/api/redemption/` + user.id
-        // );
-        // const redemption = await redemptionResponse.json();
-        // setRedemption(redemption.data);
-      } catch (error) {
-        console.error("Error fetching submissions:", error);
-      }
+    const applyStats = async (user) => {
+      setStats([
+          { name: "Lifetime Points", value: user.balances?.lifetime_points || 0},
+            { name: "Current Points", value: user.balances?.current_points || 0 },
+            { name: "Highest Ranking", value: "# " +user.balances?.highest_ranking || "-" },
+            { name: "Current Ranking", value: "-" }]
+    );
+      return user;
     };
-    withUser().then(getSubmissions);
+    const userPromise = withUser();
+    userPromise.then(applyStats);
+    userPromise.then(getSubmissions);
   }, []); //Add in userid later
 
   return (
