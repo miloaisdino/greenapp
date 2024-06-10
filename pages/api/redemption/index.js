@@ -17,7 +17,10 @@ export default async function handler(req, res) {
             .select('reward_id, points_cost, available_quantity')
             .eq('reward_id', body.reward_id);
         const reward = reward_data[0];
-        if (reward.reward_id !== body.reward_id) res.status(500).json({error: "Reward no longer exists"});
+        if (reward.reward_id !== body.reward_id) {
+            res.status(500).json({error: "Reward no longer exists"});
+            return; //DO NOT REMOVE
+        }
 
         //get account balance
         const {data: acc_data} = await sclient
@@ -25,8 +28,10 @@ export default async function handler(req, res) {
             .select('*')
             .eq('id', user_id);
         const acc = acc_data[0];
-        if (acc?.id !== user_id || acc.current_points < reward.points_cost)
+        if (acc?.id !== user_id || acc.current_points < reward.points_cost) {
             res.status(500).json({error: "Insufficient funds"});
+            return; //DO NOT REMOVE
+        }
 
         //create redemption entry
         const row = {

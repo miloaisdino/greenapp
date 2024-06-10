@@ -155,7 +155,7 @@ export default function Dashboard() {
       setStats([
           { name: "Lifetime Points", value: user.balances?.lifetime_points || 0},
             { name: "Current Points", value: user.balances?.current_points || 0 },
-            { name: "Highest Ranking", value: "# " +user.balances?.highest_ranking || "-" },
+            { name: "Highest Ranking", value: user.balances?.highest_ranking ? user.balances?.highest_ranking : "-" },
             { name: "Current Ranking", value: "-" }]
     );
       return user;
