@@ -14,7 +14,7 @@ export default async function handler(req, res) {
         //get reward details
         const {data: reward_data} = await sclient
             .from('reward')
-            .select('reward_id, points_cost, available_quantity')
+            .select('*')
             .eq('reward_id', body.reward_id);
         const reward = reward_data[0];
         if (reward.reward_id !== body.reward_id) {
@@ -58,6 +58,17 @@ export default async function handler(req, res) {
             res.status(500).json({ error: error?.message || error2?.message });
             return;
         }
+
+        //update recycling statement
+        await sclient
+            .from("recycling")
+            .insert([{
+                user_id: user.data.user.id,
+                status: 1,
+                txn_type: 99,
+                description: "Redemption: " + reward.name,
+                points_awarded: -reward.points_cost}])
+            .select();
 
         res.status(201).json({ data });
     } else if (req.method === 'GET') {

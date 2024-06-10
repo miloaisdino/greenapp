@@ -22,7 +22,7 @@ const initialStats = [
   },
 ];
 const statuses = {
-  Successful: "text-green-700 bg-green-50 ring-green-600/20",
+  Successful: "text-green-700 bg-green-50 ring-green-600/20 hidden",
   Pending: "text-gray-600 bg-gray-50 ring-gray-500/10",
   Failed: "text-red-700 bg-red-50 ring-red-600/10",
 };
@@ -69,7 +69,7 @@ export default function Dashboard() {
           transactions: grouped[date].map((submission) => ({
             id: submission.submission_id,
             invoiceNumber: submission.index,
-            amount: submission.points_awarded,
+            amount: Math.abs(submission.points_awarded),
             href: "#",
             status:
               submission.status == 0
@@ -78,7 +78,7 @@ export default function Dashboard() {
                 ? "Successful"
                 : "Failed",
             description: submission.description,
-            icon: ArrowUpCircleIcon,
+            icon: submission.points_awarded >= 0 ? ArrowUpCircleIcon : ArrowDownCircleIcon,
           })),
         };
       })
@@ -297,7 +297,7 @@ export default function Dashboard() {
                               <td className="relative py-5 pr-6">
                                 <div className="flex gap-x-6">
                                   <transaction.icon
-                                    className="hidden h-6 w-5 flex-none text-gray-400 sm:block"
+                                    className="hidden h-6 w-5 flex-none text-gray-400 sm:block fill-green-600"
                                     aria-hidden="true"
                                   />
                                   <div className="flex-auto">
