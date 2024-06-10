@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import apiLinks from "@/app/pages/api";
@@ -11,11 +11,12 @@ import GreenAppIcon from "@/public/greenAppIcon.svg";
 /* eslint-disable @next/next/no-img-element */
 
 export default function Login() {
-  //check if correct domain
-  if(!window.location.href.includes(apiLinks.main)){
-    window.location.replace(apiLinks.main+"/login")
-  }
-
+  useEffect(() => {
+    //check if correct domain
+    if(!window.location.href.includes(apiLinks.main)){
+      window.location.replace(apiLinks.main+"/login")
+    }
+  });
   const supabase = createClient();
   const router = useRouter();
   const [formDetails, setFormDetails] = useState({
