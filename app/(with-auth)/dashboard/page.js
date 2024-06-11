@@ -15,26 +15,14 @@ import SubmissionModal from "./submissionModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const stats = [
+const initialStats = [
   {
-    name: "Lifetime Points",
-    value: "925000",
-  },
-  {
-    name: "Current Points",
-    value: "175000",
-  },
-  {
-    name: "Highest Ranking",
-    value: "#2",
-  },
-  {
-    name: "Current Ranking",
-    value: "#4",
+    name: "",
+    value: "",
   },
 ];
 const statuses = {
-  Successful: "text-green-700 bg-green-50 ring-green-600/20",
+  Successful: "text-green-700 bg-green-50 ring-green-600/20 hidden",
   Pending: "text-gray-600 bg-gray-50 ring-gray-500/10",
   Failed: "text-red-700 bg-red-50 ring-red-600/10",
 };
@@ -45,6 +33,7 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
+  const [stats, setStats] = useState(initialStats);
   const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formDetails, setFormDetails] = useState({
@@ -80,7 +69,7 @@ export default function Dashboard() {
           transactions: grouped[date].map((submission) => ({
             id: submission.submission_id,
             invoiceNumber: submission.index,
-            amount: submission.points_awarded,
+            amount: Math.abs(submission.points_awarded),
             href: "#",
             status:
               submission.status == 0
@@ -89,7 +78,7 @@ export default function Dashboard() {
                 ? "Successful"
                 : "Failed",
             description: submission.description,
-            icon: ArrowUpCircleIcon,
+            icon: submission.points_awarded >= 0 ? ArrowUpCircleIcon : ArrowDownCircleIcon,
           })),
         };
       })
@@ -124,6 +113,7 @@ export default function Dashboard() {
       setFormDetails({ image_url: "", description: "" });
       // setShowModal(false);
       toast.success("Submission successful");
+      getSubmissions(user);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -132,6 +122,24 @@ export default function Dashboard() {
 
   const toggleModal = () => {
     setShowModal(!showModal);
+  };
+
+  const getSubmissions = async (user) => {
+    try {
+      const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
+      const submissions = await response.json();
+      setSubmissions(submissions.data);
+      const groupedDays = groupSubmissionsByDay(submissions.data);
+      setGroupedDays(groupedDays);
+
+      // const redemptionResponse = await fetch(
+      //   `${apiLinks.main}/api/redemption/` + user.id
+      // );
+      // const redemption = await redemptionResponse.json();
+      // setRedemption(redemption.data);
+    } catch (error) {
+      console.error("Error fetching submissions:", error);
+    }
   };
 
   useEffect(() => {
@@ -143,24 +151,18 @@ export default function Dashboard() {
       }
       return currentUser;
     }
-    const getSubmissions = async (user) => {
-      try {
-        const response = await fetch(`${apiLinks.main}/api/recycle/` + user.id);
-        const submissions = await response.json();
-        setSubmissions(submissions.data);
-        const groupedDays = groupSubmissionsByDay(submissions.data);
-        setGroupedDays(groupedDays);
-
-        // const redemptionResponse = await fetch(
-        //   `${apiLinks.main}/api/redemption/` + user.id
-        // );
-        // const redemption = await redemptionResponse.json();
-        // setRedemption(redemption.data);
-      } catch (error) {
-        console.error("Error fetching submissions:", error);
-      }
+    const applyStats = async (user) => {
+      setStats([
+          { name: "Lifetime Points", value: user.balances?.lifetime_points || 0},
+            { name: "Current Points", value: user.balances?.current_points || 0 },
+            { name: "Highest Ranking", value: user.balances?.highest_ranking ? user.balances?.highest_ranking : "-" },
+            { name: "Current Ranking", value: "-" }]
+    );
+      return user;
     };
-    withUser().then(getSubmissions);
+    const userPromise = withUser();
+    userPromise.then(applyStats);
+    userPromise.then(getSubmissions);
   }, []); //Add in userid later
 
   return (
@@ -295,7 +297,7 @@ export default function Dashboard() {
                               <td className="relative py-5 pr-6">
                                 <div className="flex gap-x-6">
                                   <transaction.icon
-                                    className="hidden h-6 w-5 flex-none text-gray-400 sm:block"
+                                    className="hidden h-6 w-5 flex-none text-gray-400 sm:block fill-green-600"
                                     aria-hidden="true"
                                   />
                                   <div className="flex-auto">
@@ -466,7 +468,6 @@ export default function Dashboard() {
             </div>
           </div> */}
         </div>
-        <ToastContainer />
       </main>
     </>
   );

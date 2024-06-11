@@ -4,7 +4,7 @@ if (process.env.NEXT_PUBLIC_HOST) {
 } else if (process.env.NEXT_PUBLIC_VERCEL_URL) {
   url = 'https://' + process.env.NEXT_PUBLIC_VERCEL_URL;
 } else {
-  url = 'http://localhost:3000/';
+  url = 'http://localhost:3000';
 }
 
 const apiLinks = {
