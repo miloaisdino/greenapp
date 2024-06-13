@@ -9,6 +9,7 @@ import {
 import { fetchCurrentUser } from "../../component/fetchUser";
 import apiLinks from "@/app/pages/api";
 import SubmissionModal from "./submissionModal";
+import TransactionModal from "./transactionModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -32,7 +33,9 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(initialStats);
   const [submissions, setSubmissions] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [submissionModal, setsubmissionModal] = useState(false);
+  const [transactionDetails, setTransactionDetails] = useState(null);
+  const [transactionModal, setTransactionModal] = useState(false);
   const [formDetails, setFormDetails] = useState({
     points_awarded: 0,
     image_url: "",
@@ -115,17 +118,22 @@ export default function Dashboard() {
         image_url: "",
         description: "",
       }));
-      // setShowModal(false);
+      // setsubmissionModal(false);
       toast.success("Submission successful");
       getSubmissions(user);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
-    setShowModal(false);
+    setsubmissionModal(false);
   };
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
+  const toggleSubmissionModal = () => {
+    setsubmissionModal(!submissionModal);
+  };
+
+  const toggleTransactionModal = (transaction) => {
+    setTransactionDetails(transaction);
+    setTransactionModal(!transactionModal);
   };
 
   const getSubmissions = async (user) => {
@@ -198,7 +206,7 @@ export default function Dashboard() {
                 </a>
               </div>
               <button
-                onClick={toggleModal}
+                onClick={toggleSubmissionModal}
                 className="ml-auto flex items-center gap-x-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 <PlusSmallIcon className="-ml-1.5 h-5 w-5" aria-hidden="true" />
@@ -206,13 +214,20 @@ export default function Dashboard() {
               </button>
               {/* Modal */}
 
-              {showModal && (
+              {submissionModal && (
                 <SubmissionModal
                   handleSubmit={handleSubmit}
-                  toggleModal={toggleModal}
-                  open={showModal}
+                  toggleModal={toggleSubmissionModal}
+                  open={submissionModal}
                   formDetails={formDetails}
                   setFormDetails={setFormDetails}
+                />
+              )}
+              {transactionModal && transactionDetails && (
+                <TransactionModal
+                  toggleModal={toggleTransactionModal}
+                  open={transactionModal}
+                  transactionDetails={transactionDetails}
                 />
               )}
             </div>
@@ -335,8 +350,10 @@ export default function Dashboard() {
                               </td>
                               <td className="py-5 text-right">
                                 <div className="flex justify-end">
-                                  <a
-                                    href={transaction.href}
+                                  <button
+                                    onClick={() =>
+                                      toggleTransactionModal(transaction)
+                                    }
                                     className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
                                   >
                                     View
@@ -347,7 +364,7 @@ export default function Dashboard() {
                                     <span className="sr-only">
                                       , invoice #{transaction.invoiceNumber},{" "}
                                     </span>
-                                  </a>
+                                  </button>
                                 </div>
                                 <div className="mt-1 text-xs leading-5 text-gray-500">
                                   Invoice{" "}
