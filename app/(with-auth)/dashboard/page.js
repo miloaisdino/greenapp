@@ -70,7 +70,8 @@ export default function Dashboard() {
             id: submission.submission_id,
             invoiceNumber: submission.index,
             amount: Math.abs(submission.points_awarded),
-            href: "#",
+            image_url: submission.image_url,
+            submission_date: submission.submission_date,
             status:
               submission.status == 0
                 ? "Pending"

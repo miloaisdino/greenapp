@@ -1,27 +1,16 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon, PhotoIcon } from "@heroicons/react/24/outline";
-import { CldUploadWidget } from "next-cloudinary";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { CldImage } from "next-cloudinary";
 
 export default function TransactionModal({
-  handleSubmit,
   toggleModal,
   open,
-  formDetails,
-  setFormDetails,
+  transactionDetails,
 }) {
+  console.log(transactionDetails);
   const cancelButtonRef = useRef(null);
-  const [uploadStatus, setUploadStatus] = useState(false);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-  const handleUpload = (result, options) => {
-    const imageUrl = result.info.secure_url;
-    setFormDetails((prevDetails) => ({
-      ...prevDetails,
-      image_url: imageUrl,
-    }));
-    setUploadedImageUrl(imageUrl);
-    setUploadStatus(true);
-  };
+  if (!transactionDetails) return null;
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -67,111 +56,41 @@ export default function TransactionModal({
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      {uploadStatus
-                        ? "Image Uploaded Successfully"
-                        : "Please take a picture of your recycling item for verification"}
+                      Transaction Details
                     </Dialog.Title>
 
-                    <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                      {" "}
-                      {uploadStatus ? (
-                        <div>
-                          <img
-                            src={uploadedImageUrl}
-                            alt="Uploaded"
-                            className=""
-                          />
-                          <p className="mt-2 text-sm leading-6 text-gray-600">
-                            Your image has been uploaded successfully.
-                          </p>
-                        </div>
+                    <div className="mt-2">
+                      {transactionDetails.image_url ? (
+                        <CldImage
+                          src={transactionDetails.image_url}
+                          alt="Transaction Image"
+                          width="600"
+                          height="400"
+                          crop="scale"
+                          className="max-w-full h-auto"
+                        />
                       ) : (
-                        <div>
-                          <PhotoIcon
-                            className="mx-auto h-12 w-12 text-gray-300"
-                            aria-hidden="true"
-                          />
-                          <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                            <label
-                              htmlFor="file-upload"
-                              className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                            >
-                              <CldUploadWidget
-                                uploadPreset="SubmissionsUploadPreset"
-                                onSuccess={handleUpload}
-                              >
-                                {({ open }) => {
-                                  return (
-                                    <button onClick={() => open()}>
-                                      Upload an Image
-                                    </button>
-                                  );
-                                }}
-                              </CldUploadWidget>
-                            </label>
-                          </div>
-                        </div>
+                        <p className="text-sm leading-6 text-gray-600">
+                          No image available
+                        </p>
                       )}
-                    </div>
-                    <label
-                      htmlFor="description"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Description
-                    </label>
-                    <div className="mt-2">
-                      <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                        <input
-                          type="text"
-                          name="description"
-                          id="description"
-                          autoComplete="description"
-                          className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                          required
-                          defaultValue={formDetails.description}
-                          onChange={(e) =>
-                            setFormDetails({
-                              ...formDetails,
-                              description: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </div>
-                    <label
-                      htmlFor="points_awarded"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Points Awarded
-                    </label>
-                    <div className="mt-2">
-                      <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                        <input
-                          type="number"
-                          name="points_awarded"
-                          id="points_awarded"
-                          className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                          required
-                          defaultValue={null}
-                          onChange={(e) =>
-                            setFormDetails({
-                              ...formDetails,
-                              points_awarded: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
+
+                      <p className="text-sm leading-6 text-gray-600">
+                        Transaction ID: {transactionDetails.id}
+                      </p>
+                      <p className="text-sm leading-6 text-gray-600">
+                        Points Awarded: {transactionDetails.amount}
+                      </p>
+                      <p className="text-sm leading-6 text-gray-600">
+                        Date: {transactionDetails.submission_date.split("T")[0]}
+                      </p>
+                      <p className="text-sm leading-6 text-gray-600">
+                        Description: {transactionDetails.description}
+                      </p>
                     </div>
                   </div>
                 </div>
-                <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                    onClick={() => handleSubmit()}
-                  >
-                    Submit
-                  </button>
+                <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense ">
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
