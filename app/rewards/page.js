@@ -5,6 +5,7 @@ import MainHeader from "../component/mainHeader";
 import { useRouter } from "next/navigation";
 import MainFooter from "../component/mainFooter";
 import { createClient } from "@/lib/supabase/component";
+import { CldImage } from "next-cloudinary";
 
 export default function Rewards() {
   const [availableRewards, setAvailableRewards] = useState([]);
@@ -19,6 +20,9 @@ export default function Rewards() {
           throw new Error(error.message);
         }
         setAvailableRewards(data);
+        console.log(
+          availableRewards.map((reward) => reward.name + reward.image_url)
+        );
       } catch (error) {
         console.error(error);
         toast.error(
@@ -43,10 +47,12 @@ export default function Rewards() {
               <div key={reward.reward_id}>
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                    <img
-                      src={reward.image_url || "placeholderImage.svg"}
-                      alt={reward.name || "Image not available"}
-                      className="h-full w-full object-cover object-center"
+                    <CldImage
+                      src={reward.image_url}
+                      alt={reward.name || "Reward not available"}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 25vw"
                     />
                   </div>
                   <div className="relative mt-4">

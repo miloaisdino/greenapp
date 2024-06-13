@@ -3,10 +3,7 @@
 import { Fragment, useEffect, useState } from "react";
 import {
   ArrowDownCircleIcon,
-  ArrowPathIcon,
   ArrowUpCircleIcon,
-  Bars3Icon,
-  EllipsisHorizontalIcon,
   PlusSmallIcon,
 } from "@heroicons/react/20/solid";
 import { fetchCurrentUser } from "../../component/fetchUser";
@@ -78,7 +75,10 @@ export default function Dashboard() {
                 ? "Successful"
                 : "Failed",
             description: submission.description,
-            icon: submission.points_awarded >= 0 ? ArrowUpCircleIcon : ArrowDownCircleIcon,
+            icon:
+              submission.points_awarded >= 0
+                ? ArrowUpCircleIcon
+                : ArrowDownCircleIcon,
           })),
         };
       })
@@ -110,7 +110,11 @@ export default function Dashboard() {
       setSubmissions((prevSubmissions) => [...prevSubmissions, result.data[0]]);
       const groupedDays = groupSubmissionsByDay(submissions);
       setGroupedDays(groupedDays);
-      setFormDetails({ image_url: "", description: "" });
+      setFormDetails((prevFormDetails) => ({
+        ...prevFormDetails,
+        image_url: "",
+        description: "",
+      }));
       // setShowModal(false);
       toast.success("Submission successful");
       getSubmissions(user);
@@ -153,11 +157,16 @@ export default function Dashboard() {
     }
     const applyStats = async (user) => {
       setStats([
-          { name: "Lifetime Points", value: user.balances?.lifetime_points || 0},
-            { name: "Current Points", value: user.balances?.current_points || 0 },
-            { name: "Highest Ranking", value: user.balances?.highest_ranking ? user.balances?.highest_ranking : "-" },
-            { name: "Current Ranking", value: "-" }]
-    );
+        { name: "Lifetime Points", value: user.balances?.lifetime_points || 0 },
+        { name: "Current Points", value: user.balances?.current_points || 0 },
+        {
+          name: "Highest Ranking",
+          value: user.balances?.highest_ranking
+            ? user.balances?.highest_ranking
+            : "-",
+        },
+        { name: "Current Ranking", value: "-" },
+      ]);
       return user;
     };
     const userPromise = withUser();
