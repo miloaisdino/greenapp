@@ -22,7 +22,7 @@ export default function MainHeader() {
         <div className="flex lg:flex-1">
           <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">GreenApp</span>
-            <GreenAppIcon className="h-16 w-32" />
+            <GreenAppIcon className="h-16 w-32" data-testid="GreenAppIcon" />
           </a>
         </div>
         <div className="flex lg:hidden">

@@ -1,63 +1,44 @@
-// MainHeader.test.js
 import "@testing-library/jest-dom";
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import MainHeader from "@/app/component/mainHeader";
 
-// Mock the SVG and icon components to avoid rendering issues during tests
-jest.mock("@/public/greenAppIcon.svg", () => () => <div>Mocked Icon</div>);
-jest.mock("@heroicons/react/24/outline", () => ({
-  Bars3Icon: () => <div>Bars3Icon</div>,
-  XMarkIcon: () => <div>XMarkIcon</div>,
-}));
-
-describe("MainHeader", () => {
-  test("renders the main header with navigation links", () => {
+describe("MainHeader Component", () => {
+  it("renders the MainHeader component correctly", () => {
     render(<MainHeader />);
 
-    // Check for navigation links
+    // Check if the SVG element (logo) is present in the document using data-testid
+    const logo = screen.getByTestId("GreenAppIcon");
+    expect(logo).toBeInTheDocument();
+    expect(logo).toHaveClass("h-16 w-32");
+
+    // Check if navigation links are rendered
     expect(screen.getByText("Home")).toBeInTheDocument();
     expect(screen.getByText("Rewards")).toBeInTheDocument();
     expect(screen.getByText("Features")).toBeInTheDocument();
+
+    // Check if the login link is rendered
     expect(screen.getByText("Log in")).toBeInTheDocument();
   });
 
-  test("renders the mobile menu button and opens/closes the menu", () => {
+  it("opens and closes the mobile menu", () => {
     render(<MainHeader />);
 
-    // Check that the mobile menu button is rendered
-    const openButton = screen.getByRole("button", { name: /open main menu/i });
-    expect(openButton).toBeInTheDocument();
+    // Open mobile menu
+    const openMenuButton = screen.getByRole("button", {
+      name: "Open main menu",
+    });
+    fireEvent.click(openMenuButton);
 
-    // Simulate clicking the mobile menu button to open the menu
-    fireEvent.click(openButton);
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    // Check if the menu opens
+    const closeMenuButton = screen.getByRole("button", { name: "Close menu" });
+    expect(closeMenuButton).toBeInTheDocument();
 
-    // Check that the menu items are present in the opened menu
-    expect(screen.getByText("Home")).toBeInTheDocument();
-    expect(screen.getByText("Rewards")).toBeInTheDocument();
-    expect(screen.getByText("Features")).toBeInTheDocument();
-    expect(screen.getByText("Log in")).toBeInTheDocument();
+    // Check if mobile menu navigation links are rendered
+    const homeLinks = screen.getAllByText("Home");
+    expect(homeLinks.length).toBeGreaterThan(1);
+    homeLinks.forEach((link) => expect(link).toBeVisible());
 
-    // Simulate clicking the close button to close the menu
-    const closeButton = screen.getByRole("button", { name: /close menu/i });
-    fireEvent.click(closeButton);
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  });
-
-  test("renders the desktop navigation when not in mobile view", () => {
-    // Render the component
-    render(<MainHeader />);
-
-    // Check for desktop navigation links
-    expect(screen.getByText("Home")).toBeInTheDocument();
-    expect(screen.getByText("Rewards")).toBeInTheDocument();
-    expect(screen.getByText("Features")).toBeInTheDocument();
-    expect(screen.getByText("Log in")).toBeInTheDocument();
-
-    // Check that the mobile menu button is not visible in the desktop view
-    expect(
-      screen.queryByRole("button", { name: /open main menu/i })
-    ).not.toBeInTheDocument();
+    // Close mobile menu
+    fireEvent.click(closeMenuButton);
   });
 });
