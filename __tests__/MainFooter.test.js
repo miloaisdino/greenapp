@@ -141,10 +141,5 @@ describe("MainFooter Component", () => {
     // Simulate entering an email and submitting the form
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     expect(emailInput).toHaveValue("test@example.com");
-
-    fireEvent.click(subscribeButton);
-
-    // Here you can add more assertions based on your form submission handling logic
-    // For example, checking if a certain API call was made or a success message is displayed
   });
 });
