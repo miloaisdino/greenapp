@@ -88,7 +88,7 @@ export default function MainFooter() {
       </h2>
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-          <GreenAppIcon className="h-32 w-64" />
+          <GreenAppIcon className="h-32 w-64" data-testid="GreenAppIcon" />
           <div className="mt-8 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
@@ -97,7 +97,7 @@ export default function MainFooter() {
                 </h3>
                 <ul role="list" className="mt-6 space-y-4">
                   {footerNavigation.programs.map((item) => (
-                    <li key={item.name}>
+                    <li key={item.name} label={item.name}>
                       <a
                         href={`https://www.google.com/search?q=${item.name}`}
                         className="text-sm leading-6 text-gray-300 hover:text-white"
@@ -204,6 +204,7 @@ export default function MainFooter() {
                 key={item.name}
                 href={item.href}
                 className="text-gray-500 hover:text-gray-400"
+                aria-label={item.name}
               >
                 <span className="sr-only">{item.name}</span>
                 <item.icon className="h-6 w-6" aria-hidden="true" />
