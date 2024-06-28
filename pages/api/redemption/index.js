@@ -59,7 +59,7 @@ export default async function handler(req, res) {
 
         //send email
         let mailSuccess = await mailer.send({
-            to: user.data.email,
+            to: user.data.user.email,
             subject: 'Redemption Voucher - ' + reward.name,
             text: '===== Redemption Voucher =====\n' +
                 'Item: ' + reward.name + '\n' +
