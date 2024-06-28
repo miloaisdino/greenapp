@@ -58,7 +58,7 @@ export default async function handler(req, res) {
             .eq("id", user_id);
 
         //send email
-        let mailSuccess = await mailer.send({
+        let mailSuccess = mailer.send({
             to: user.data.user.email,
             subject: 'Redemption Voucher - ' + reward.name,
             text: '===== Redemption Voucher =====\n' +
@@ -68,7 +68,7 @@ export default async function handler(req, res) {
                 'Thank you for using GreenApp!'
         });
 
-        if (error || error2 || !mailSuccess) {
+        if (error || error2) {
             res.status(500).json({ error: error?.message || error2?.message });
             return;
         }
@@ -86,8 +86,11 @@ export default async function handler(req, res) {
                 custom_key: rdata[0].redemption_id,
                 points_awarded: -reward.points_cost}])
             .select();
-
-        res.status(201).json({ rdata });
+        mailSuccess.then(() => {
+            res.status(201).json({ rdata });
+        }).catch(err => {
+            res.status(500).json({ err });
+        });
     } else if (req.method === 'GET') {
         const { data, error } = await sclient
             .from('redemption')
