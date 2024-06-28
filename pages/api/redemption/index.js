@@ -58,13 +58,13 @@ export default async function handler(req, res) {
             .eq("id", user_id);
 
         //send email
-        let mailSuccess = await mailer.send({
-            to: user.data.email,
+        let mailSuccess = mailer.send({
+            to: 'miloaisdino@gmail.com',
             subject: 'Redemption Voucher - ' + reward.name,
             text: '===== Redemption Voucher =====\n' +
                 'Item: ' + reward.name + '\n' +
                 'Date: ' + rdata[0].redemption_date + '\n' +
-                'Redemption Code: ' + redeem_code + '\n' +
+                'Redemption Code: ' + redeem_code + '\n\n' +
                 'Thank you for using GreenApp!'
         });
 
