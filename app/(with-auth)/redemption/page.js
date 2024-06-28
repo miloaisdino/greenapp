@@ -41,6 +41,7 @@ export default function Redemption() {
         if (result.error) {
           toast.error(result.error);
         } else {
+          setShowModal(false);
           toast.success(
             <div>
               Redemption successful!
@@ -54,11 +55,10 @@ export default function Redemption() {
       })
       .catch((error) => {
         // Handle any fetch errors
+        setShowModal(false);
         console.error(error);
         toast.error("An error occurred. Please try again.");
       });
-
-    setShowModal(false);
   };
 
   const handleCancelSubmit = () => {
