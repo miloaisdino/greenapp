@@ -13,6 +13,8 @@ export default function SubmissionModal({
   const cancelButtonRef = useRef(null);
   const [uploadStatus, setUploadStatus] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+  const [imageTags, setImageTags] = useState([]);
+
   const handleUpload = (result, options) => {
     const imageUrl = result.info.secure_url;
     setFormDetails((prevDetails) => ({
@@ -21,6 +23,15 @@ export default function SubmissionModal({
     }));
     setUploadedImageUrl(imageUrl);
     setUploadStatus(true);
+    const imageTags = result.info.tags;
+    setImageTags(imageTags);
+
+    // Calculate points awarded
+    const points = imageTags.length * 50;
+    setFormDetails((prevDetails) => ({
+      ...prevDetails,
+      points_awarded: points,
+    }));
   };
 
   return (
@@ -84,6 +95,11 @@ export default function SubmissionModal({
                           <p className="mt-2 text-sm leading-6 text-gray-600">
                             Your image has been uploaded successfully.
                           </p>
+                          {imageTags.length > 0 && (
+                            <div className="mt-2 text-sm leading-6 text-gray-600">
+                              <strong>Tags:</strong> {imageTags.join(", ")}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div>
@@ -99,11 +115,19 @@ export default function SubmissionModal({
                               <CldUploadWidget
                                 uploadPreset="SubmissionsUploadPreset"
                                 onSuccess={handleUpload}
+                                options={{
+                                  acceptedFormats: [
+                                    "jpg",
+                                    "jpeg",
+                                    "png",
+                                    "gif",
+                                  ],
+                                }}
                               >
                                 {({ open }) => {
                                   return (
                                     <button onClick={() => open()}>
-                                      Upload an Image
+                                      Upload an Image (.jpg, .jpeg, .png, .gif)
                                     </button>
                                   );
                                 }}
@@ -145,22 +169,9 @@ export default function SubmissionModal({
                       Points Awarded
                     </label>
                     <div className="mt-2">
-                      <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                        <input
-                          type="number"
-                          name="points_awarded"
-                          id="points_awarded"
-                          className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                          required
-                          defaultValue={null}
-                          onChange={(e) =>
-                            setFormDetails({
-                              ...formDetails,
-                              points_awarded: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
+                      <p className="text-lg font-semibold leading-6 text-indigo-600 bg-indigo-100 rounded-md p-2">
+                        {formDetails.points_awarded || 0} points
+                      </p>
                     </div>
                   </div>
                 </div>
