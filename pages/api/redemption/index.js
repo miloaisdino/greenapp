@@ -1,5 +1,6 @@
 import * as db from '@/lib/db.js';
 import createClient from '@/lib/supabase/api'
+import * as mailer from '@/lib/mailer.js'
 
 export default async function handler(req, res) {
     const sclient = createClient(req, res);
@@ -34,14 +35,16 @@ export default async function handler(req, res) {
         }
 
         //create redemption entry
+        const redeem_code = mailer.codegen();
         const row = {
             'user_id': user_id,
             'reward_id': reward.reward_id,
             'debit': reward.points_cost,
             'status': 0, //not yet claimed or emailed to user
             'quantity': 1,
+            'redeem_code': redeem_code
         }
-        const { data, error } = await sclient
+        const { data: rdata, error } = await sclient
             .from('redemption')
             .insert([row])
             .select();
@@ -54,6 +57,17 @@ export default async function handler(req, res) {
             .select()
             .eq("id", user_id);
 
+        //send email
+        let mailSuccess = mailer.send({
+            to: user.data.user.email,
+            subject: 'Redemption Voucher - ' + reward.name,
+            text: '===== Redemption Voucher =====\n' +
+                'Item: ' + reward.name + '\n' +
+                'Date: ' + rdata[0].redemption_date + '\n' +
+                'Redemption Code: ' + redeem_code + '\n' +
+                'Thank you for using GreenApp!'
+        });
+
         if (error || error2) {
             res.status(500).json({ error: error?.message || error2?.message });
             return;
@@ -65,12 +79,18 @@ export default async function handler(req, res) {
             .insert([{
                 user_id: user.data.user.id,
                 status: 1,
-                txn_type: 99,
                 description: "Redemption: " + reward.name,
+                image_url: reward.image_url,
+                submission_date: rdata[0].redemption_date,
+                txn_type: 99,
+                custom_key: rdata[0].redemption_id,
                 points_awarded: -reward.points_cost}])
             .select();
-
-        res.status(201).json({ data });
+        mailSuccess.then(() => {
+            res.status(201).json({ rdata });
+        }).catch(err => {
+            res.status(500).json({ err });
+        });
     } else if (req.method === 'GET') {
         const { data, error } = await sclient
             .from('redemption')
