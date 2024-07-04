@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       .select();
 
     //get account balance
-    const { data: acc_data } = await sclient
+    /*const { data: acc_data } = await sclient
       .from("balances")
       .select("*")
       .eq("id", id);
@@ -24,17 +24,17 @@ export default async function handler(req, res) {
     if (acc?.id !== id) {
       res.status(500).json({ error: "Insufficient funds" });
       return; //DO NOT REMOVE
-    }
+    }*/
 
     //update balance
-    acc.current_points += body.points_awarded;
-    const { error: error2 } = await sclient
+    //acc.current_points += body.points_awarded;
+    /*const { error: error2 } = await sclient
       .from("balances")
       .update([acc])
       .select()
-      .eq("id", id);
+      .eq("id", id);*/
 
-    if (error || error2) {
+    if (error) {
       res.status(500).json({ error: error?.message || error2?.message });
       return;
     }
