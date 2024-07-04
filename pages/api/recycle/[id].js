@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       .select()
       .eq("id", id);*/
 
-    if (error || error2) {
+    if (error) {
       res.status(500).json({ error: error?.message || error2?.message });
       return;
     }
