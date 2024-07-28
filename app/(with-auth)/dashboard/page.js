@@ -126,6 +126,8 @@ export default function Dashboard() {
       console.error("Error submitting form:", error);
     }
     setsubmissionModal(false);
+    //bugfix: workaround for cloudinary scroll lock
+    document.body.style.overflow = "scroll";
   };
 
   const toggleSubmissionModal = () => {
