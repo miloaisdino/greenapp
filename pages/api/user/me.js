@@ -30,6 +30,21 @@ export default async function handler(req, res) {
                 description: "Welcome Bonus",
                 points_awarded: reply.balances.current_points}])
             .select();
+    } else {
+        //calculate rank
+        const { data: count } = await supabase
+            .from('balances')
+            .select('current_points')
+            .gte('current_points', reply.balances.current_points);
+        reply.balances.current_ranking = count.length;
+        if (reply.balances.highest_ranking == null || count.length < reply.balances.highest_ranking){
+            reply.balances.highest_ranking = count.length;
+            await supabase
+                .from('balances')
+                .update({ highest_ranking: count.length })
+                .eq('id', reply.balances.id)
+                .select();
+        }
     }
     res.status(200).json(reply);
 }

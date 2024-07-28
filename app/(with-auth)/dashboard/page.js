@@ -176,7 +176,12 @@ export default function Dashboard() {
             ? user.balances?.highest_ranking
             : "-",
         },
-        { name: "Current Ranking", value: "-" },
+        {
+          name: "Current Ranking",
+          value: user.balances?.current_ranking
+              ? user.balances?.current_ranking
+              : "-",
+        },
       ]);
       return user;
     };
