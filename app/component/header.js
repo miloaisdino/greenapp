@@ -5,7 +5,7 @@ const Header = (props) => {
   const navigation = [
     { name: "Home", href: "/dashboard" },
     { name: "Redeem Rewards", href: "/redemption" },
-    { name: "Contact", href: "#" },
+    { name: "Contact", href: "mailto:greenapp.orbital@gmail.com" },
   ];
 
   return (
